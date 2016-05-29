@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
+          
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Enhanging Communication (EC+): Portal Académico</title>
+    </h:head>
+    <h:body>
+        <div><h1>Enhancing Communication (EC+): Portal Académico</h1></div>
+        <h:form id="form">
+            <p:outputLabel value="Idioma" for="idioma"/>
+            <p:selectOneMenu id="idioma" value="#{content.idioma}">
+                <f:selectItem itemValue="es" itemLabel="Español"/>
+                <f:selectItem itemValue="cat" itemLabel="Catalá"/>
+                <f:selectItem itemValue="de" itemLabel="Deutsch"/>
+                <f:selectItem itemValue="nl" itemLabel="Nederlands"/>
+            </p:selectOneMenu>
+
+            <p:tabView id="panel">
+                <p:tab id="palabras" title="Palabras">
+                    <div id="grid" class="ui-grid ui-grid-responsive">
+                        <div id="fila" class="ui-grid-row">
+                            <div id="c1" class="ui-grid-col-4">
+                                <p:accordionPanel>
+                                    <p:tab title="Buscar palabra">
+                                        <p:autoComplete placeholder="Buscar palabra"  id="buscaPalabra" value="#{content.palabra}" completeMethod="#{content.autocompletar}" />
+                                        <p:commandButton value="Ver" update=":form:panel:audiovisual">
+                                        </p:commandButton>
+                                    </p:tab>
+                                    
+                                    <p:tab title="Todas las palabras">
+                                        <p:dataList var="palabra" value="#{content.words}" type="unordered" itemType="none" paginator="true" rows="20" styleClass="paginated" pageLinks="5">
+                                            <p:commandLink update=":form:panel:audiovisual">
+                                                <h:outputText value="#{palabra.nombre}"/>
+                                                <f:setPropertyActionListener target="#{content.palabra}" value="#{palabra.nombre}"/>
+                                            </p:commandLink>
+
+                                        </p:dataList>
+                                    </p:tab>
+                                </p:accordionPanel>
+                            </div>
+
+
+                            <div class="ui-grid-col-8">
+                                <p:dataGrid   id="audiovisual" value="#{content.recursoAudioVisualForWord}" var="rav" paginator="false" columns="2">
+                                    <p:tabView value="#{['Baja', 'Media', 'Alta']}" var="resolucion" dynamic="true">
+                                        <p:tab title="#{resolucion}">
+                                            <h:graphicImage value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" width="90%"/>
+                                            <!--
+                                            <p:graphicImage cache="false" value="#{imagenes.imagen}" width="90%">
+                                                <f:param name="nombreImagen" value="#{rav.getFichero(fn:toUpperCase(resolucion))}"/>
+                                            </p:graphicImage>-->
+                                        </p:tab>
+                                    </p:tabView>
+                                    
+                                </p:dataGrid>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </p:tab>
+                <p:tab id="sindromes" title="Síndromes">
+
+                </p:tab>
+            </p:tabView>
+
+        </h:form>
+    </h:body>
+</html>
+

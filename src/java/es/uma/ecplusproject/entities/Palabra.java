@@ -16,6 +16,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,7 +45,7 @@ public class Palabra implements Serializable {
     @Column(name="hash")
     @MapKeyColumn(name="resolucion")
     private Map<Resolucion,String> hashes;
-    @ManyToMany(cascade = {CascadeType.PERSIST})
+    @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     private Set<RecursoAudioVisual> audiovisuales;
     @ManyToOne(cascade={CascadeType.PERSIST})
     private RecursoAudioVisual icono;

@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,7 +35,7 @@ public class RecursoAudioVisual implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @MapKeyEnumerated(EnumType.STRING)
     @CollectionTable(name = "Ficheros")
     @Column(name="hash")
@@ -55,6 +56,14 @@ public class RecursoAudioVisual implements Serializable {
 
     public void setFicheros(Map<Resolucion, String> ficheros) {
         this.ficheros = ficheros;
+    }
+    
+    public String getFichero(Resolucion res) {
+        return ficheros.get(res);
+    }
+    
+    public String getFichero(String resolucion) {
+        return ficheros.get(Resolucion.valueOf(resolucion));
     }
 
     

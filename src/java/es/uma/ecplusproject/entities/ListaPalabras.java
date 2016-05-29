@@ -17,19 +17,24 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 /**
  *
  * @author francis
  */
 @Entity
+@NamedQueries(@NamedQuery(name = "idioma", query = "select l from ListaPalabras l where l.idioma=:idioma"))
 public class ListaPalabras implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,8 +48,9 @@ public class ListaPalabras implements Serializable {
     @Column(name="hash")
     @MapKeyColumn(name="resolucion")
     private Map<Resolucion, String> hashes;
-    @OneToMany(cascade={CascadeType.MERGE})
+    @OneToMany(cascade={CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name="listapalabras")
+    @OrderBy("nombre ASC")
     private List<Palabra> palabras;
 
     public Long getId() {
