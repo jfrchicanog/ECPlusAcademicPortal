@@ -6,8 +6,10 @@
 package es.uma.ecplusproject.backing;
 
 import es.uma.ecplusproject.entities.ListaPalabras;
+import es.uma.ecplusproject.entities.ListaSindromes;
 import es.uma.ecplusproject.entities.Palabra;
 import es.uma.ecplusproject.entities.RecursoAudioVisual;
+import es.uma.ecplusproject.entities.Sindrome;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -17,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -44,9 +47,21 @@ public class Content implements Serializable {
     private EntityManager em;
     
     private String idioma;
+    
     private String palabra;
     private List<Palabra> palabras;
     private Palabra palabraElegida;
+    
+    private List<Sindrome> sindromes;
+    private Sindrome sindromeElegido;
+
+    public Sindrome getSindromeElegido() {
+        return sindromeElegido;
+    }
+
+    public void setSindromeElegido(Sindrome sindromeElegido) {
+        this.sindromeElegido = sindromeElegido;
+    }
 
     public String getPalabra() {
         return palabra;
@@ -92,6 +107,17 @@ public class Content implements Serializable {
         }
     }
     
+    private List<Sindrome> fetchSyndromes() {
+        TypedQuery<ListaSindromes> consulta = em.createNamedQuery("sindromes-idioma", ListaSindromes.class);
+        consulta.setParameter("idioma", "cat");
+        List<ListaSindromes> resultado = consulta.getResultList();
+        if (resultado.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+            return resultado.get(0).getSindromes();
+        }
+    }
+    
     public List<RecursoAudioVisual> getRecursoAudioVisualForWord() {
         List<RecursoAudioVisual> resultado = new ArrayList<>();
         if (palabraElegida != null) {
@@ -108,8 +134,33 @@ public class Content implements Serializable {
         return palabras;
     }
     
+    public List<Sindrome> getSyndromes() {
+        if (sindromes == null) {
+            sindromes = fetchSyndromes();
+        }
+        return sindromes;
+    }
+    
+    public String getDetalleSindrome() {
+        if (sindromeElegido != null) {
+            return new String(sindromeElegido.getContenido(), Charset.forName("UTF-8"));
+        }
+        else {
+            return "No se ha elegido síndrome";
+        }
+    }
+    
     public String getImageURL(String hash) {
         return "/ecplus/api/v1/resource/"+hash;
+    }
+    
+    public String getSindromeURL() {
+        if (sindromeElegido != null) {
+            return "/ecplus/api/v1/sindrome/"+sindromeElegido.getId();
+        }
+        else {
+            return "";
+        }
     }
     
 }

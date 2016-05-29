@@ -14,6 +14,7 @@ import es.uma.ecplusproject.entities.RecursoAudioVisual;
 import es.uma.ecplusproject.entities.Resolucion;
 import es.uma.ecplusproject.entities.Sindrome;
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -158,6 +159,17 @@ public class ecplusRS {
         {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
+    }
+    
+    @GET
+    @Path("sindrome/{id}")
+    @Produces(MediaType.TEXT_HTML)
+    public Response getSindrome(@PathParam("id") Long id) {
+        Sindrome sindrome = em.find(Sindrome.class, id);
+        if (sindrome == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(new String(sindrome.getContenido(), Charset.forName("UTF-8"))).build();
     }
 
     @GET
