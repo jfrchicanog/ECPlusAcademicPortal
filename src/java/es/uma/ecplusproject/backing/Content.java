@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.PhaseId;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
@@ -156,11 +158,22 @@ public class Content implements Serializable {
     
     public String getSindromeURL() {
         if (sindromeElegido != null) {
-            return "/ecplus/api/v1/sindrome/"+sindromeElegido.getId();
+            String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+            System.out.println(contextPath);
+            return contextPath+"/ecplus/api/v1/sindrome/"+sindromeElegido.getId();
         }
         else {
             return "";
         }
+    }
+    
+    public void loginButton(ActionEvent actionEvent) {
+        addMessage("Login no disponible");
+    }
+     
+    private void addMessage(String summary) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary,  null);
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
     
 }
