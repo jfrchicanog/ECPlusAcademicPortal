@@ -211,7 +211,7 @@ public class ecplusRS {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getResource(@PathParam("hash") String name)
     {
-        File file = new File(context.getInitParameter("ecplus.resources.FILES_DIR"), name);
+        File file = new File(context.getInitParameter("ecplus.resources.FILES_DIR"), name.toLowerCase());
         //file = new File("/Users/francis/Documents/investigacion/Proyectos/ECPlusProject/Web/fotos/foto.JPG");
         if(file.isDirectory() || !file.exists())
         {
