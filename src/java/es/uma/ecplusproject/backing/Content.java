@@ -5,11 +5,14 @@
  */
 package es.uma.ecplusproject.backing;
 
+import es.uma.ecplusproject.entities.Foto;
 import es.uma.ecplusproject.entities.ListaPalabras;
 import es.uma.ecplusproject.entities.ListaSindromes;
 import es.uma.ecplusproject.entities.Palabra;
+import es.uma.ecplusproject.entities.Pictograma;
 import es.uma.ecplusproject.entities.RecursoAudioVisual;
 import es.uma.ecplusproject.entities.Sindrome;
+import es.uma.ecplusproject.entities.Video;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -152,8 +155,21 @@ public class Content implements Serializable {
         }
     }
     
+
     public String getImageURL(String hash) {
-        return "/ecplus/api/v1/resource/"+hash;
+        return "/ecplus/api/v1/foto/"+hash;
+    }
+    
+    public String getVideoURL(String hash) {
+        String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+        System.out.println(contextPath);
+        return contextPath+"/ecplus/api/v1/video/"+hash;
+    }
+    
+    public String getPictogramaURL(String hash) {
+        String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+        System.out.println(contextPath);
+        return contextPath+"/ecplus/api/v1/pictograma/"+hash;
     }
     
     public String getSindromeURL() {
@@ -169,6 +185,18 @@ public class Content implements Serializable {
     
     public void loginButton(ActionEvent actionEvent) {
         addMessage("Login no disponible");
+    }
+    
+    public boolean esVideo(RecursoAudioVisual rav) {
+        return rav instanceof Video;
+    }
+    
+    public boolean esPictograma(RecursoAudioVisual rav) {
+        return rav instanceof Pictograma;
+    }
+    
+    public boolean esFoto(RecursoAudioVisual rav) {
+        return rav instanceof Foto;
     }
      
     private void addMessage(String summary) {

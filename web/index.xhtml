@@ -5,7 +5,6 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
-
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
         <title>Enhanging Communication (EC+): Portal Académico</title>
@@ -13,6 +12,7 @@
             body {
                 font-size: 8pt;
             }
+            .ui-datagrid-column {width: 33%;}
         </style>
     </h:head>
     <h:body>
@@ -22,6 +22,7 @@
             <div class="ui-grid ui-grid-responsive">
                 <div class="ui-grid-row">
                     <div class="ui-grid-col-1" >
+
                         <h:panelGrid columns="2" cellpadding="5" style="position: relative; height: 100px; top: 50%">
                             <p:outputLabel value="Idioma" for="idioma"/>
                             <p:selectOneMenu id="idioma" value="#{content.idioma}">
@@ -73,14 +74,27 @@
 
 
                             <div class="ui-grid-col-8">
-                                <p:dataGrid   id="audiovisual" value="#{content.recursoAudioVisualForWord}" var="rav" paginator="false" columns="2">
+                                <p:dataGrid   id="audiovisual" value="#{content.recursoAudioVisualForWord}" var="rav" paginator="false" columns="2" >
                                     <p:tabView value="#{['Baja', 'Media', 'Alta']}" var="resolucion" dynamic="true">
                                         <p:tab title="#{resolucion}">
-                                            <h:graphicImage value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" width="90%"/>
+
+                                            <h:panelGroup rendered="#{content.esPictograma(rav)}" layout="block" id ="pictograma">
+                                                <object onload="recalcula(event)" width="100%" type="image/svg+xml" data="#{content.getPictogramaURL(rav.getFichero(fn:toUpperCase(resolucion)))}">
+                                                    Your browser does not support SVG
+                                                </object>
+
+                                            </h:panelGroup>
+                                            <h:graphicImage rendered="#{content.esFoto(rav)}" value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" width="90%"/>
+                                            <h:panelGroup rendered="#{content.esVideo(rav)}" layout="block" id ="video">
+                                                <video id="video" width="90%" controls="controls">
+                                                    <source src="#{content.getVideoURL(rav.getFichero(fn:toUpperCase(resolucion)))}" type="video/mp4" />
+                                                </video>
+                                            </h:panelGroup>
+
                                             <!--
-                                            <p:graphicImage cache="false" value="#{imagenes.imagen}" width="90%">
-                                                <f:param name="nombreImagen" value="#{rav.getFichero(fn:toUpperCase(resolucion))}"/>
-                                            </p:graphicImage>-->
+                                            <video width="90%" src="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" rendered="#{content.esVideo(rav)}"/>
+                                            <h:graphicImage value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" width="90%"/>
+                                            -->
                                         </p:tab>
                                     </p:tabView>
 
@@ -111,7 +125,22 @@
                 </p:tab>
             </p:tabView>
 
-        </h:form>
+        </h:form>        
     </h:body>
+
+    <h:outputScript>
+
+        function recalcula(event) {
+        var svgDoc = event.currentTarget.contentDocument;
+        var svg = svgDoc.getElementsByTagName("svg")[0];
+        svg.viewBox.baseVal.x = svg.getBBox().x;
+        svg.viewBox.baseVal.width = svg.getBBox().width;
+        svg.viewBox.baseVal.y = svg.getBBox().y;
+        svg.viewBox.baseVal.height = svg.getBBox().height;
+        }
+
+    </h:outputScript>
+
+
 </html>
 
