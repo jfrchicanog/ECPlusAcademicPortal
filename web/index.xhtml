@@ -75,8 +75,14 @@
                                 <p:dataGrid   id="audiovisual" value="#{content.recursoAudioVisualForWord}" var="rav" paginator="false" columns="2">
                                     <p:tabView value="#{['Baja', 'Media', 'Alta']}" var="resolucion" dynamic="true">
                                         <p:tab title="#{resolucion}">
-                                            <h:outputText rendered="#{content.esPictograma(rav)}" value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" escape="false"/>
+
+                                            <h:panelGroup rendered="#{content.esPictograma(rav)}" layout="block" id ="pictograma">
+                                                Pictograma
+                                                <!-- <iframe frameborder="0" width="100%" src="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}"></iframe> -->
+                                            </h:panelGroup>
+                                            <h:graphicImage rendered="#{content.esFoto(rav)}" value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" width="90%"/>
                                             <h:outputText rendered="#{content.esVideo(rav)}" value="Video"/>
+                                            
                                             <h:outputText rendered="#{content.esFoto(rav)}" value="Foto"/>
                                             <!--
                                             <video width="90%" src="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" rendered="#{content.esVideo(rav)}"/>

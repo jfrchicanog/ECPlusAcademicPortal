@@ -155,8 +155,12 @@ public class Content implements Serializable {
         }
     }
     
+    
+    
     public String getImageURL(String hash) {
-        return "/ecplus/api/v1/resource/"+hash;
+        String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+        System.out.println(contextPath);
+        return contextPath+"/ecplus/api/v1/resource/"+hash;
     }
     
     public String getSindromeURL() {
@@ -175,7 +179,6 @@ public class Content implements Serializable {
     }
     
     public boolean esVideo(RecursoAudioVisual rav) {
-        System.out.println(rav.getClass());
         return rav instanceof Video;
     }
     
