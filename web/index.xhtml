@@ -5,7 +5,6 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
-
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
         <title>Enhanging Communication (EC+): Portal Académico</title>
@@ -76,12 +75,13 @@
                                 <p:dataGrid   id="audiovisual" value="#{content.recursoAudioVisualForWord}" var="rav" paginator="false" columns="2">
                                     <p:tabView value="#{['Baja', 'Media', 'Alta']}" var="resolucion" dynamic="true">
                                         <p:tab title="#{resolucion}">
-                                            <h:outputText escape="false" value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}"/>
-                                            <h:graphicImage value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" width="90%"/>
+                                            <h:outputText rendered="#{content.esPictograma(rav)}" value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" escape="false"/>
+                                            <h:outputText rendered="#{content.esVideo(rav)}" value="Video"/>
+                                            <h:outputText rendered="#{content.esFoto(rav)}" value="Foto"/>
                                             <!--
-                                            <p:graphicImage cache="false" value="#{imagenes.imagen}" width="90%">
-                                                <f:param name="nombreImagen" value="#{rav.getFichero(fn:toUpperCase(resolucion))}"/>
-                                            </p:graphicImage>-->
+                                            <video width="90%" src="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" rendered="#{content.esVideo(rav)}"/>
+                                            <h:graphicImage value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" width="90%"/>
+                                            -->
                                         </p:tab>
                                     </p:tabView>
 
