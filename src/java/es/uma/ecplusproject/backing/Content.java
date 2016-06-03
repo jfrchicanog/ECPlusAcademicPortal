@@ -155,12 +155,21 @@ public class Content implements Serializable {
         }
     }
     
-    
-    
+
     public String getImageURL(String hash) {
+        return "/ecplus/api/v1/foto/"+hash;
+    }
+    
+    public String getVideoURL(String hash) {
         String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
         System.out.println(contextPath);
-        return contextPath+"/ecplus/api/v1/resource/"+hash;
+        return contextPath+"/ecplus/api/v1/video/"+hash;
+    }
+    
+    public String getPictogramaURL(String hash) {
+        String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+        System.out.println(contextPath);
+        return contextPath+"/ecplus/api/v1/pictograma/"+hash;
     }
     
     public String getSindromeURL() {
