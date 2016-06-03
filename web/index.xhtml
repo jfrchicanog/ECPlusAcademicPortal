@@ -25,7 +25,8 @@
 
                         <h:panelGrid columns="2" cellpadding="5" style="position: relative; height: 100px; top: 50%">
                             <p:outputLabel value="Idioma" for="idioma"/>
-                            <p:selectOneMenu id="idioma" value="#{content.idioma}">
+                            <p:selectOneMenu id="idioma" value="#{content.idioma}" >
+                                <p:ajax update="form:panel" listener="#{content.onIdiomaChange()}"/>
                                 <f:selectItem itemValue="es" itemLabel="Español"/>
                                 <f:selectItem itemValue="cat" itemLabel="Catalá"/>
                                 <f:selectItem itemValue="de" itemLabel="Deutsch"/>

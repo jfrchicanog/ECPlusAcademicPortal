@@ -94,7 +94,7 @@ public class Content implements Serializable {
     public List<String> autocompletar(String texto) {
         List<String> resultado = new ArrayList<>();
         for (Palabra palabra: getWords()) {
-            if (palabra.getNombre().startsWith(texto)) {
+            if (palabra.getNombre().toUpperCase().startsWith(texto.toUpperCase())) {
                 resultado.add(palabra.getNombre());
             }
         }
@@ -103,7 +103,7 @@ public class Content implements Serializable {
     
     private List<Palabra> fetchWords() {
         TypedQuery<ListaPalabras> consulta = em.createNamedQuery("idioma", ListaPalabras.class);
-        consulta.setParameter("idioma", "cat");
+        consulta.setParameter("idioma", idioma);
         List<ListaPalabras> resultado = consulta.getResultList();
         if (resultado.isEmpty()) {
             return new ArrayList<>();
@@ -114,7 +114,7 @@ public class Content implements Serializable {
     
     private List<Sindrome> fetchSyndromes() {
         TypedQuery<ListaSindromes> consulta = em.createNamedQuery("sindromes-idioma", ListaSindromes.class);
-        consulta.setParameter("idioma", "cat");
+        consulta.setParameter("idioma", idioma);
         List<ListaSindromes> resultado = consulta.getResultList();
         if (resultado.isEmpty()) {
             return new ArrayList<>();
@@ -181,6 +181,14 @@ public class Content implements Serializable {
         else {
             return "";
         }
+    }
+    
+    public void onIdiomaChange() {
+        palabras = null;
+        sindromes = null;
+        palabraElegida = null;
+        sindromeElegido = null;
+        palabra = null;
     }
     
     public void loginButton(ActionEvent actionEvent) {
