@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
@@ -22,7 +23,8 @@ import javax.persistence.OneToMany;
  * @author francis
  */
 @Entity
-@NamedQuery(name="sindromes-idioma", query="select l from ListaSindromes l where l.idioma=:idioma")
+@NamedQueries({@NamedQuery(name="sindromes-idioma", query="select l from ListaSindromes l where l.idioma=:idioma"),
+    @NamedQuery(name="todas-listas-sindromes", query="select l from ListaSindromes l")})
 public class ListaSindromes implements Serializable {
 
     private static final long serialVersionUID = 1L;

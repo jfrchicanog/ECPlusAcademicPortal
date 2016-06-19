@@ -34,7 +34,8 @@ import javax.persistence.OrderBy;
  * @author francis
  */
 @Entity
-@NamedQueries(@NamedQuery(name = "idioma", query = "select l from ListaPalabras l where l.idioma=:idioma"))
+@NamedQueries({@NamedQuery(name = "idioma", query = "select l from ListaPalabras l where l.idioma=:idioma"),
+                @NamedQuery(name="todas-listas-palabras", query="select l from ListaPalabras l")})
 public class ListaPalabras implements Serializable {
 
     private static final long serialVersionUID = 1L;
