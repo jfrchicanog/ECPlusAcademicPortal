@@ -10,8 +10,8 @@
     </context-param>
     <context-param>
         <param-name>ecplus.resources.FILES_DIR</param-name>
-        <!--<param-value>/Users/francis/Documents/investigacion/Proyectos/ECPlusProject/aplicacion/hashes</param-value>-->
-        <param-value>/var/ecplus-ap/hashes</param-value>
+        <param-value>/Users/francis/Documents/investigacion/Proyectos/ECPlusProject/aplicacion/hashes</param-value>
+        <!--<param-value>/var/ecplus-ap/hashes</param-value>-->
     </context-param>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
