@@ -234,4 +234,8 @@ public class Content implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
     
+    public String getCurrentLocale() {
+        return FacesContext.getCurrentInstance().getViewRoot().getLocale().getLanguage();
+    }
+    
 }

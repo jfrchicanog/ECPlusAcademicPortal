@@ -6,8 +6,9 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    
     <h:head>
-        <title>Enhanging Communication (EC+): Portal Académico</title>
+        <title>Enhanging Communication (EC+): #{msg['academicPortal']}</title>
         <style type="text/css">
             body {
                 font-size: 8pt;
@@ -48,18 +49,18 @@
 
 
             <p:tabView id="panel">
-                <p:tab id="palabras" title="Palabras">
+                <p:tab id="palabras" title="#{msg['words']}">
                     <div class="ui-grid ui-grid-responsive">
                         <div class="ui-grid-row">
                             <div class="ui-grid-col-4">
                                 <p:accordionPanel>
-                                    <p:tab title="Buscar palabra">
-                                        <p:autoComplete placeholder="Buscar palabra"  id="buscaPalabra" value="#{content.palabra}" completeMethod="#{content.autocompletar}" />
-                                        <p:commandButton value="Ver" update=":form:panel:audiovisual">
+                                    <p:tab title="#{msg['searchWord']}">
+                                        <p:autoComplete placeholder="#{msg['searchWord']}"  id="buscaPalabra" value="#{content.palabra}" completeMethod="#{content.autocompletar}" />
+                                        <p:commandButton value="#{msg['goWord']}" update=":form:panel:audiovisual">
                                         </p:commandButton>
                                     </p:tab>
 
-                                    <p:tab title="Todas las palabras">
+                                    <p:tab title="#{msg['allWords']}">
                                         <p:dataList var="palabra" value="#{content.words}" type="unordered" itemType="none" paginator="true" rows="20" styleClass="paginated" pageLinks="5">
                                             <p:commandLink update=":form:panel:audiovisual">
                                                 <h:outputText value="#{palabra.nombre}"/>
@@ -102,7 +103,7 @@
                         </div>
                     </div>
                 </p:tab>
-                <p:tab id="sindromes" title="Síndromes">
+                <p:tab id="sindromes" title="#{msg['syndromes']}">
                     <div class="ui-grid ui-grid-responsive">
                         <div class="ui-grid-row">
                             <div class="ui-grid-col-4">
@@ -123,8 +124,11 @@
                 </p:tab>
             </p:tabView>
 
-        </h:form>        
+        </h:form>  
+        
     </h:body>
+        
+
 
     <h:outputScript>
 
