@@ -13,32 +13,21 @@ import es.uma.ecplusproject.entities.Pictograma;
 import es.uma.ecplusproject.entities.RecursoAudioVisual;
 import es.uma.ecplusproject.entities.Sindrome;
 import es.uma.ecplusproject.entities.Video;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Locale;
+import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.PhaseId;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
-import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -51,7 +40,8 @@ public class Content implements Serializable {
     @PersistenceContext(unitName = "ECplusProjectRSPU")
     private EntityManager em;
     
-    private String idioma;
+    private List<Locale> idiomas;
+    private Locale idiomaSeleccionado;
     
     private String palabra;
     private List<Palabra> palabras;
@@ -83,18 +73,21 @@ public class Content implements Serializable {
         }
     }
 
-    public String getIdioma() {
-        return idioma;
+    public String getIdiomaSeleccionado() {
+        if (idiomaSeleccionado == null) {
+            prepareLanguages();
+        }
+        return idiomaSeleccionado.getLanguage();
     }
 
-    public void setIdioma(String idioma) {
-        this.idioma = idioma;
+    public void setIdiomaSeleccionado(String idioma) {
+        this.idiomaSeleccionado = new Locale(idioma);
     }
     
     public List<String> autocompletar(String texto) {
         List<String> resultado = new ArrayList<>();
         for (Palabra palabra: getWords()) {
-            if (palabra.getNombre().startsWith(texto)) {
+            if (palabra.getNombre().toUpperCase().startsWith(texto.toUpperCase())) {
                 resultado.add(palabra.getNombre());
             }
         }
@@ -103,7 +96,7 @@ public class Content implements Serializable {
     
     private List<Palabra> fetchWords() {
         TypedQuery<ListaPalabras> consulta = em.createNamedQuery("idioma", ListaPalabras.class);
-        consulta.setParameter("idioma", "cat");
+        consulta.setParameter("idioma", getIdiomaSeleccionado());
         List<ListaPalabras> resultado = consulta.getResultList();
         if (resultado.isEmpty()) {
             return new ArrayList<>();
@@ -114,7 +107,7 @@ public class Content implements Serializable {
     
     private List<Sindrome> fetchSyndromes() {
         TypedQuery<ListaSindromes> consulta = em.createNamedQuery("sindromes-idioma", ListaSindromes.class);
-        consulta.setParameter("idioma", "cat");
+        consulta.setParameter("idioma", getIdiomaSeleccionado());
         List<ListaSindromes> resultado = consulta.getResultList();
         if (resultado.isEmpty()) {
             return new ArrayList<>();
@@ -122,6 +115,35 @@ public class Content implements Serializable {
             return resultado.get(0).getSindromes();
         }
     }
+    
+    public List<Locale> getSupportedLanguages() {
+        if (idiomas == null) {
+            prepareLanguages();
+        }
+        return idiomas;
+    }
+
+    private void prepareLanguages() {
+        Set<String> codigosIdiomas = new HashSet<>();
+        
+        TypedQuery<ListaPalabras> consulta = em.createNamedQuery("todas-listas-palabras", ListaPalabras.class);
+        for (ListaPalabras lp : consulta.getResultList()){
+            codigosIdiomas.add(lp.getIdioma());
+        }
+        
+        TypedQuery<ListaSindromes> sindromes = em.createNamedQuery("todas-listas-sindromes", ListaSindromes.class);
+        for (ListaSindromes ls : sindromes.getResultList()){
+            codigosIdiomas.add(ls.getIdioma());
+        }
+
+        idiomas = new ArrayList<>();
+        for (String codigo: codigosIdiomas) {
+            idiomas.add(new Locale(codigo));
+        }
+        
+        idiomaSeleccionado = idiomas.get(0);
+    }
+    
     
     public List<RecursoAudioVisual> getRecursoAudioVisualForWord() {
         List<RecursoAudioVisual> resultado = new ArrayList<>();
@@ -181,6 +203,14 @@ public class Content implements Serializable {
         else {
             return "";
         }
+    }
+    
+    public void onIdiomaChange() {
+        palabras = null;
+        sindromes = null;
+        palabraElegida = null;
+        sindromeElegido = null;
+        palabra = null;
     }
     
     public void loginButton(ActionEvent actionEvent) {
