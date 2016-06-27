@@ -81,10 +81,15 @@ public class Content implements Serializable {
         if (palabraElegida != null) {
             return palabraElegida.getNombre();
         } else {
-            return "";
+            return null;
         }
     }
     
+    public boolean getRenderWordResources() {
+        return palabraElegida != null;
+    }
+            
+        
     public Resolucion [] getResoluciones() {
         return Resolucion.values();
     }
