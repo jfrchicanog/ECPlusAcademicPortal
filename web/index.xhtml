@@ -29,7 +29,7 @@
                             <p:outputLabel value="#{msg['idioma']}" for="idioma"/>
                             <p:selectOneMenu id="idioma" value="#{content.idiomaSeleccionado}" >
                                 <p:ajax update="form:panel" listener="#{content.onIdiomaChange()}"/>
-                                <f:selectItems value="#{content.supportedLanguages}" var="idioma" itemLabel="#{idioma.displayLanguage}" itemValue="#{idioma.language}"/>
+                                <f:selectItems value="#{content.supportedLanguages}" var="idioma" itemLabel="#{localeBean.getDisplayLanguageForLocale(idioma)}" itemValue="#{idioma.language}"/>
                             </p:selectOneMenu>
                         </h:panelGrid>
                     </div>
