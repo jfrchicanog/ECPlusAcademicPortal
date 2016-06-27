@@ -11,6 +11,7 @@ import es.uma.ecplusproject.entities.ListaSindromes;
 import es.uma.ecplusproject.entities.Palabra;
 import es.uma.ecplusproject.entities.Pictograma;
 import es.uma.ecplusproject.entities.RecursoAudioVisual;
+import es.uma.ecplusproject.entities.Resolucion;
 import es.uma.ecplusproject.entities.Sindrome;
 import es.uma.ecplusproject.entities.Video;
 import java.io.Serializable;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -36,6 +38,8 @@ import javax.persistence.TypedQuery;
 @Named(value = "content")
 @ViewScoped
 public class Content implements Serializable {
+    
+    private static final String MENSAJES_BUNDLE = "mensajes";
     
     @PersistenceContext(unitName = "ECplusProjectRSPU")
     private EntityManager em;
@@ -72,7 +76,23 @@ public class Content implements Serializable {
             }
         }
     }
-
+    
+    public String getPalabraElegida() {
+        if (palabraElegida != null) {
+            return palabraElegida.getNombre();
+        } else {
+            return "";
+        }
+    }
+    
+    public Resolucion [] getResoluciones() {
+        return Resolucion.values();
+    }
+    
+    public String getLocalizedStringForResolution(String resolucion) {
+        return ResourceBundle.getBundle(MENSAJES_BUNDLE).getString(resolucion);
+    }
+    
     public String getIdiomaSeleccionado() {
         if (idiomaSeleccionado == null) {
             prepareLanguages();
