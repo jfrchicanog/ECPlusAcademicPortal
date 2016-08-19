@@ -47,12 +47,20 @@ public class Content implements Serializable {
     private List<Locale> idiomas;
     private Locale idiomaSeleccionado;
     
-    private String palabra;
     private List<Palabra> palabras;
     private Palabra palabraElegida;
     
     private List<Sindrome> sindromes;
     private Sindrome sindromeElegido;
+    
+    
+    public Palabra getPalabraElegida() {
+        return palabraElegida;
+    }
+
+    public void setPalabraElegida(Palabra palabra) {
+        palabraElegida = palabra;
+    }
 
     public Sindrome getSindromeElegido() {
         return sindromeElegido;
@@ -62,29 +70,7 @@ public class Content implements Serializable {
         this.sindromeElegido = sindromeElegido;
     }
 
-    public String getPalabra() {
-        return palabra;
-    }
 
-    public void setPalabra(String palabra) {
-        this.palabra = palabra;
-        palabraElegida = null;
-        for (Palabra p: getWords()) {
-            if (p.getNombre().equals(palabra)) {
-                palabraElegida = p;
-                break;
-            }
-        }
-    }
-    
-    public String getPalabraElegida() {
-        if (palabraElegida != null) {
-            return palabraElegida.getNombre();
-        } else {
-            return null;
-        }
-    }
-    
     public boolean getRenderWordResources() {
         return palabraElegida != null;
     }
@@ -109,15 +95,6 @@ public class Content implements Serializable {
         this.idiomaSeleccionado = new Locale(idioma);
     }
     
-    public List<String> autocompletar(String texto) {
-        List<String> resultado = new ArrayList<>();
-        for (Palabra palabra: getWords()) {
-            if (palabra.getNombre().toUpperCase().startsWith(texto.toUpperCase())) {
-                resultado.add(palabra.getNombre());
-            }
-        }
-        return resultado;
-    }
     
     private List<Palabra> fetchWords() {
         TypedQuery<ListaPalabras> consulta = em.createNamedQuery("idioma", ListaPalabras.class);
@@ -235,7 +212,6 @@ public class Content implements Serializable {
         sindromes = null;
         palabraElegida = null;
         sindromeElegido = null;
-        palabra = null;
     }
     
     public void loginButton(ActionEvent actionEvent) {
@@ -262,5 +238,4 @@ public class Content implements Serializable {
     public String getCurrentLocale() {
         return FacesContext.getCurrentInstance().getViewRoot().getLocale().getLanguage();
     }
-    
 }
