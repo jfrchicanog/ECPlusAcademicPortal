@@ -40,9 +40,9 @@
                     </div>
 
                     <div class="ui-grid-col-1" style="vertical-align: middle">
-                        <p:commandLink id="login" update="growl" actionListener="#{content.loginButton}" >
-                            <h:outputText value="#{msg['login']}" />
-                        </p:commandLink>
+                        <h:commandLink id="login" action="#{userSession.logout()}">
+                            <h:outputText value="Logout" />
+                        </h:commandLink>
                     </div>
 
                 </div>
