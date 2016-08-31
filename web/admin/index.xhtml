@@ -8,7 +8,7 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <h:head>
-        <title>Enhanging Communication (EC+): #{msg['academicPortal']}</title>
+        <title>Enhanging Communication (EC+): #{msg['academicPortalAdmin']}</title>
         <style type="text/css">
             body {
                 font-size: 8pt;
@@ -17,125 +17,67 @@
         </style>
     </h:head>
     <h:body>
-
-        <h:form id="form">
-            <p:growl id="growl" life="2000" />
-
+        <h:form id="adminform">
             <div class="ui-grid ui-grid-responsive">
                 <div class="ui-grid-row">
-                    <div class="ui-grid-col-2" >
+                    <div class="ui-grid-col-8"> 
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12"> 
+                                <p:dataTable var="lista" value="#{administration.listaPalabras}" widgetVar="wordListTable"
+                                             emptyMessage="#{msg['noWordLists']}"
+                                             paginator="false"
+                                             selectionMode="single"
+                                             selection="#{administration.listaSeleccionada}"
+                                             rowKey="#{lista.id}">
+                                    <f:facet name="header">
+                                        #{msg['wordLists']}
+                                    </f:facet>
 
-                        <h:panelGrid columns="2" cellpadding="5">
-                            <p:outputLabel value="#{msg['idioma']}" for="idioma"/>
-                            <p:selectOneMenu id="idioma" value="#{content.idiomaSeleccionado}" >
-                                <p:ajax update=":form:panel" listener="#{content.onIdiomaChange()}" oncomplete="PF('wordsTable').clearFilters()"/>
-                                <f:selectItems value="#{content.supportedLanguages}" var="idioma" itemLabel="#{localeBean.getDisplayLanguageForLocale(idioma)}" itemValue="#{idioma.language}"/>
-                            </p:selectOneMenu>
-                        </h:panelGrid>
+                                    <p:ajax event="rowSelect" listener="#{administration.onListaSeleccionada}" />
+                                    <p:ajax event="rowUnselect" listener="#{administration.onListaDeseleccionada}"/>
+
+                                    <p:column headerText="#{msg['idColumn']}" filterBy="#{lista.id}" filterMatchMode="exact" sortBy="#{lista.id}" style="width: 15%">
+                                        <h:outputText value="#{lista.id}"/>
+                                    </p:column>
+                                    <p:column headerText="#{msg['languageColumn']}" filterBy="#{lista.idioma}" filterMatchMode="exact" sortBy="#{lista.idioma}" style="width: 15%">
+                                        <h:outputText value="#{lista.idioma}"/>
+                                    </p:column>
+                                    <p:column headerText="#{msg['hashesColumn']}">
+                                        <h:outputText value="#{administration.getResoluciones(lista)}"/>
+                                    </p:column>
+                                    <p:column headerText="#{msg['actionsColumn']}" style="width: 15%">
+                                        <p:commandButton icon="fa fa-remove" type="button" value="#{msg['removeButton']}" action="#{administration.removeLista(lista)}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                        <div  class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:panelGrid columns="1">
+                                    <p:row>
+                                        <h:outputLabel value="#{msg['languageCode']}" for="adminform:inputLanguage"/></p:row>
+                                    <p:row><p:inputText id="inputLanguage" value="#{administration.codigoIdioma}">
+                                            <p:ajax event="keyup" update="adminform:languageString" listener="#{administration.onCodigoIdiomaChanged}"/>
+                                        </p:inputText>
+                                        <p:commandButton icon="fa fa-plus" type="button" value="#{msg['addButton']}"/>
+                                    </p:row>
+                                    <p:row><h:outputText id="languageString" value="#{administration.cadenaIdioma}"/></p:row>
+                                </p:panelGrid>
+                            </div>
+
+
+                        </div>
                     </div>
 
-                    <div id="brand" class="ui-grid-col-9" style="text-align: center; vertical-align: middle">
-                        <h:graphicImage style="display: inline; vertical-align: middle" value="#{resource['logo.png']}" width="100px"/>
-                        <h1 style="vertical-align: middle; display: inline">Enhancing Communication (EC+): #{msg['academicPortal']}</h1>
-                    </div>
+                    <div class="ui-grid-col-4">
 
-                    <div class="ui-grid-col-1" style="vertical-align: middle">
-                        <h:commandLink id="login" action="#{userSession.logout()}">
-                            <h:outputText value="Logout" />
-                        </h:commandLink>
                     </div>
-
                 </div>
             </div>
 
 
-            <p:tabView id="panel">
-                <p:tab id="palabras" title="#{msg['words']}">
-                    <div class="ui-grid ui-grid-responsive">
-                        <div class="ui-grid-row">
-                            <div class="ui-grid-col-4">    
-                                <p:dataTable var="palabra" value="#{content.words}" widgetVar="wordsTable"
-                                             emptyMessage="#{msg['nowords']}"
-                                             paginator="true" rows="20"
-                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
-
-                                    <p:column headerText="#{msg['idColumn']}" filterBy="#{palabra.id}" filterMatchMode="exact" sortBy="#{palabra.id}" rendered="false">
-                                        <h:outputText value="#{palabra.id}"/>
-                                    </p:column>
-                                    <p:column headerText="#{msg['wordColumn']}" filterBy="#{palabra.nombre}" filterMatchMode="contains" sortBy="#{palabra.nombre}" >
-                                        <p:commandLink update=":form:panel:audiovisual :form:panel:headingPalabra">
-                                            <h:outputText value="#{palabra.nombre}"/>
-                                            <f:setPropertyActionListener target="#{content.palabraElegida}" value="#{palabra}"/>
-                                        </p:commandLink>
-                                    </p:column>
-                                    <p:column headerText="#{msg['categoryColumn']}" rendered="true">
-                                    </p:column>
-                                    <p:column headerText="#{msg['advancedColumn']}" rendered="false">
-                                    </p:column>
-                                    <p:column headerText="#{msg['oppositeColumn']}" rendered="true">
-                                    </p:column>
-                                </p:dataTable>
-                            </div>
-
-
-                            <div class="ui-grid-col-8">
-                                <h2 style="text-align:center"><h:outputText value="#{content.palabraElegida.nombre}" id="headingPalabra"/></h2>
-                                <p:dataGrid emptyMessage="#{msg['noWordSelected']}" id="audiovisual" value="#{content.recursoAudioVisualForWord}" var="rav" paginator="false" columns="2" >
-                                    <p:tabView value="#{content.resoluciones}" var="resolucion" dynamic="true" >
-                                        <p:tab title="#{content.getLocalizedStringForResolution(resolucion)}">
-
-                                            <h:panelGroup rendered="#{content.esPictograma(rav)}" layout="block" id ="pictograma">
-                                                <object onload="recalcula(event)" width="100%" type="image/svg+xml" data="#{content.getPictogramaURL(rav.getFichero(fn:toUpperCase(resolucion)))}">
-                                                    Your browser does not support SVG
-                                                </object>
-
-                                            </h:panelGroup>
-                                            <h:graphicImage rendered="#{content.esFoto(rav)}" value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" width="90%"/>
-                                            <h:panelGroup rendered="#{content.esVideo(rav)}" layout="block" id ="video">
-                                                <video id="video" width="90%" controls="controls">
-                                                    <source src="#{content.getVideoURL(rav.getFichero(fn:toUpperCase(resolucion)))}" type="video/mp4" />
-                                                </video>
-                                            </h:panelGroup>
-
-                                            <!--
-                                            <video width="90%" src="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" rendered="#{content.esVideo(rav)}"/>
-                                            <h:graphicImage value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" width="90%"/>
-                                            -->
-                                        </p:tab>
-                                    </p:tabView>
-
-                                </p:dataGrid>
-
-                            </div>
-                        </div>
-                    </div>
-                </p:tab>
-                <p:tab id="sindromes" title="#{msg['syndromes']}">
-                    <div class="ui-grid ui-grid-responsive">
-                        <div class="ui-grid-row">
-                            <div class="ui-grid-col-4">
-                                <p:dataList var="sindrome" value="#{content.syndromes}" type="unordered" itemType="unordered">
-                                    <p:commandLink  style="text-decoration:none" update=":form:panel:detalleSindrome">
-                                        <h:outputText value="#{sindrome.nombre}"/>
-                                        <f:setPropertyActionListener target="#{content.sindromeElegido}" value="#{sindrome}"/>
-                                    </p:commandLink>
-                                </p:dataList>
-                            </div>
-
-                            <h:panelGroup layout="block" id ="detalleSindrome" styleClass="ui-grid-col-8">
-                                <iframe frameborder="0" width="100%" height="500px" src="#{content.sindromeURL}"></iframe>
-                            </h:panelGroup>
-
-                        </div>
-                    </div>
-                </p:tab>
-            </p:tabView>
-
-        </h:form>  
-
+        </h:form>
     </h:body>
-
-
 
     <h:outputScript>
 

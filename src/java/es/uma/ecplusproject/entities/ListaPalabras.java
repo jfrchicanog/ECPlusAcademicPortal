@@ -43,7 +43,7 @@ public class ListaPalabras implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String idioma;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @MapKeyEnumerated(EnumType.STRING)
     @CollectionTable(name = "HashesListaPalabras")
     @Column(name="hash")
