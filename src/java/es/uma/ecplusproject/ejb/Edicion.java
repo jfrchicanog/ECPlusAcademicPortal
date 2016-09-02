@@ -5,11 +5,17 @@
  */
 package es.uma.ecplusproject.ejb;
 
+import es.uma.ecplusproject.entities.Foto;
 import es.uma.ecplusproject.entities.ListaPalabras;
 import es.uma.ecplusproject.entities.Palabra;
+import es.uma.ecplusproject.entities.Pictograma;
 import es.uma.ecplusproject.entities.RecursoAudioVisual;
 import es.uma.ecplusproject.entities.Resolucion;
+import es.uma.ecplusproject.entities.Video;
+import java.io.File;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -17,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,6 +37,8 @@ import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 @Stateless
 public class Edicion implements EdicionLocal {
 
+    @Resource(name = "ecplus.resources.FILES_DIR")
+    private String filesDir;
     @PersistenceContext(unitName = "ECplusProjectRSPU")
     private EntityManager em;
 
@@ -120,7 +129,7 @@ public class Edicion implements EdicionLocal {
             StringBuilder buffer = new StringBuilder();
             buffer.append(palabra.getNombre()).append(";");
             buffer.append(palabra.getIconoReemplazable()).append(";");
-            if (palabra.getIcono()!=null) {
+            if (palabra.getIcono() != null) {
                 buffer.append(palabra.getIcono().getFicheros().get(res)).append(";");
             }
             List<String> listaHashes = new ArrayList<>();
@@ -149,6 +158,84 @@ public class Edicion implements EdicionLocal {
             recalculaHashes(lp);
             em.merge(lp);
             return palabra;
+        } catch (NoSuchAlgorithmException e) {
+            throw new ECPlusBusinessException(e.getMessage());
+        }
+    }
+
+    private RecursoAudioVisual procesaFichero(String arg, File fichero) throws Exception {
+        String[] nombreExtension = arg.split("\\.(?=[^\\.]+$)");
+        if (nombreExtension.length != 2) {
+            throw new IllegalArgumentException("File without extension " + arg);
+        }
+        String extension = nombreExtension[1];
+
+        RecursoAudioVisual av = recursoAudioVisualPorExtension(extension);
+        String hash = createSha1(fichero);
+        for (Resolucion res : Resolucion.values()) {
+            av.addFichero(res, hash);
+        }
+
+        File destino = new File(filesDir, hash.toLowerCase());
+        Files.copy(fichero.toPath(), destino.toPath());
+
+        System.out.println("hash:" + hash);
+        return av;
+    }
+
+    @Override
+    public Palabra aniadirRecursoAPalabra(Palabra palabra, String nombreOriginal, File fichero) throws ECPlusBusinessException {
+        try {
+            RecursoAudioVisual av = procesaFichero(nombreOriginal, fichero);
+            em.persist(av);
+
+            Palabra editar = em.merge(palabra);
+            editar.addRecursoAudioVisual(av);
+            calculaHashes(editar);
+
+            ListaPalabras lp = editar.getListaPalabras();
+            recalculaHashes(lp);
+            em.merge(lp);
+
+            return editar;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ECPlusBusinessException(e.getMessage());
+        }
+    }
+
+    private RecursoAudioVisual recursoAudioVisualPorExtension(String extension) throws UnallowedFormatException {
+        switch (extension.toLowerCase()) {
+            case "svg":
+                return new Pictograma();
+            case "mp4":
+                return new Video();
+            case "jpg":
+            case "jpeg":
+                return new Foto();
+            default:
+                throw new UnallowedFormatException("Format " + extension + " not allowed for resources");
+        }
+
+    }
+
+    public String createSha1(File file) throws Exception {
+        byte[] contenido = Files.readAllBytes(Paths.get(file.toURI()));
+        return calculaHash(contenido);
+    }
+
+    @Override
+    public Palabra eliminarRecursoDePalabra(Palabra palabra, RecursoAudioVisual rav) throws ECPlusBusinessException {
+        try {
+            Palabra editar = em.merge(palabra);
+            editar.removeRecursoAudioVisual(rav);
+
+            calculaHashes(editar);
+            ListaPalabras lp = editar.getListaPalabras();
+            recalculaHashes(lp);
+            em.merge(lp);
+
+            return editar;
         } catch (NoSuchAlgorithmException e) {
             throw new ECPlusBusinessException(e.getMessage());
         }

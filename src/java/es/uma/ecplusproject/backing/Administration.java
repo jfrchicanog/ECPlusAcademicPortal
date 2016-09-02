@@ -17,17 +17,17 @@ import es.uma.ecplusproject.entities.Pictograma;
 import es.uma.ecplusproject.entities.RecursoAudioVisual;
 import es.uma.ecplusproject.entities.Resolucion;
 import es.uma.ecplusproject.entities.Video;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
@@ -68,7 +68,6 @@ public class Administration implements Serializable {
     private List<ListaPalabras> listasPalabras;
     private List<Categoria> categorias;
     private List<Palabra> palabras;
-    private List<RecursoAudioVisual> recursos;
 
     public Administration() {
     }
@@ -128,7 +127,6 @@ public class Administration implements Serializable {
                 palabraSeleccionada = null;
                 palabras = null;
                 categorias = null;
-                recursos = null;
             }
 
         } catch (ListWithWordsException e) {
@@ -174,8 +172,24 @@ public class Administration implements Serializable {
     }
 
     public void ficheroSubido(FileUploadEvent event) {
-        // TODO
+        try {
+            File file = File.createTempFile("uploaded", ".temp");
+            file.delete();
+            event.getFile().write(file.getAbsolutePath());
 
+            Palabra modificada = edicion.aniadirRecursoAPalabra(palabraSeleccionada, event.getFile().getFileName(), file);
+
+            file.delete();
+
+            palabraSeleccionada.setHashes(modificada.getHashes());
+            palabraSeleccionada.setAudiovisuales(modificada.getAudiovisuales());
+            listaSeleccionada.setHashes(modificada.getListaPalabras().getHashes());
+
+        } catch (IOException e) {
+            Logger.getLogger(Administration.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(Administration.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public List<Categoria> getCategorias() {
@@ -291,11 +305,24 @@ public class Administration implements Serializable {
             nuevaPalabra.setListaPalabras(listaSeleccionada);
             Palabra insertada = edicion.aniadirPalabra(nuevaPalabra);
             listaSeleccionada.setHashes(insertada.getListaPalabras().getHashes());
-            
+
             palabras = null;
             nuevaPalabra = new Palabra();
         } catch (ECPlusBusinessException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public void eliminarRecursoAudioVisual(RecursoAudioVisual rav) {
+        try {
+            Palabra modificada = edicion.eliminarRecursoDePalabra(palabraSeleccionada, rav);
+
+            palabraSeleccionada.setHashes(modificada.getHashes());
+            palabraSeleccionada.setAudiovisuales(modificada.getAudiovisuales());
+            listaSeleccionada.setHashes(modificada.getListaPalabras().getHashes());
+
+        } catch  (ECPlusBusinessException e) {
+            Logger.getLogger(Administration.class.getName()).log(Level.SEVERE, e.getMessage());
         }
     }
 

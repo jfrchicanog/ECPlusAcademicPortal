@@ -7,6 +7,8 @@ package es.uma.ecplusproject.ejb;
 
 import es.uma.ecplusproject.entities.ListaPalabras;
 import es.uma.ecplusproject.entities.Palabra;
+import es.uma.ecplusproject.entities.RecursoAudioVisual;
+import java.io.File;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -22,5 +24,7 @@ public interface EdicionLocal {
     public void eliminarListaPalabras(ListaPalabras lista) throws ECPlusBusinessException;
     public Palabra editarPalabra(Palabra palabra) throws ECPlusBusinessException;
     public Palabra aniadirPalabra(Palabra palabra) throws ECPlusBusinessException;
+    public Palabra aniadirRecursoAPalabra(Palabra palabra, String nombreOriginal, File fichero) throws ECPlusBusinessException;
+    public Palabra eliminarRecursoDePalabra(Palabra palabra, RecursoAudioVisual rav) throws ECPlusBusinessException;
     
 }

@@ -6,7 +6,7 @@
 package es.uma.ecplusproject.entities;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -15,7 +15,6 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -112,7 +111,18 @@ public class Palabra implements Serializable {
         this.iconoReemplazado = iconoReemplazado;
     }
     
-
+    public void addRecursoAudioVisual(RecursoAudioVisual av) {
+        if (audiovisuales == null) {
+            setAudiovisuales(new HashSet<>());
+        }
+        audiovisuales.add(av);
+    }
+    
+    public void removeRecursoAudioVisual(RecursoAudioVisual av) {
+        if (audiovisuales != null) {
+            audiovisuales.remove(av);
+        }
+    }
     
 
     public Long getId() {
