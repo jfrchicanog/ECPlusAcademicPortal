@@ -18,5 +18,7 @@ import javax.ejb.Local;
 public interface EdicionLocal {
 
     public List<Palabra> palabrasDeLista(ListaPalabras lista);
+    public void aniadirListaPalabras(ListaPalabras lista) throws ECPlusBusinessException;
+    public void eliminarListaPalabras(ListaPalabras lista) throws ECPlusBusinessException;
     
 }

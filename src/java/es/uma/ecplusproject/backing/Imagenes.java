@@ -66,9 +66,7 @@ public class Imagenes implements Serializable {
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Content.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
-        } catch (IOException ex) {
-            Logger.getLogger(Content.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
         return null;
         
         

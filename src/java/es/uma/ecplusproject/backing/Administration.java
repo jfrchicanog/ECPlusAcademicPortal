@@ -5,7 +5,10 @@
  */
 package es.uma.ecplusproject.backing;
 
+import es.uma.ecplusproject.ejb.AlreadyExistsException;
+import es.uma.ecplusproject.ejb.ECPlusBusinessException;
 import es.uma.ecplusproject.ejb.EdicionLocal;
+import es.uma.ecplusproject.ejb.ListWithWordsException;
 import es.uma.ecplusproject.entities.Categoria;
 import es.uma.ecplusproject.entities.Foto;
 import es.uma.ecplusproject.entities.ListaPalabras;
@@ -21,6 +24,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -102,7 +107,26 @@ public class Administration implements Serializable {
     }
 
     public void removeLista(ListaPalabras lista) {
+        try {
+            edicion.eliminarListaPalabras(lista);
+            listasPalabras=null;
+            
+            if (listaSeleccionada.equals(lista)) {
+                listaSeleccionada=null;
+                palabraSeleccionada=null;
+                palabras=null;
+                categorias=null;
+                recursos=null;
+            }
+            
+        } catch (ListWithWordsException e) {
+            addMessage(e.getMessage());
+        } catch (ECPlusBusinessException e) {
+            System.out.println(e.getMessage());
+        }
+        
         // TODO
+        System.out.println("remove");
     }
 
     public ListaPalabras getListaSeleccionada() {
@@ -222,5 +246,25 @@ public class Administration implements Serializable {
         }
     }
     
+    public void aniadirListaDePalabras() {
+        // TODO
+        ListaPalabras nuevaLista = new ListaPalabras();
+        nuevaLista.setIdioma(codigoIdioma);
+        try {
+            edicion.aniadirListaPalabras(nuevaLista);
+            listasPalabras = null;
+        } catch (AlreadyExistsException e) {
+            addMessage(e.getMessage());
+        } catch (ECPlusBusinessException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        
+    }
+    
+    private void addMessage(String summary) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary,  null);
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
     
 }

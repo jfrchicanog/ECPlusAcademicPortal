@@ -12,7 +12,8 @@
                          paginator="false"
                          selectionMode="single"
                          selection="#{administration.listaSeleccionada}"
-                         rowKey="#{lista.id}">
+                         rowKey="#{lista.id}"
+                         id="tablaListasPalabras">
                 <f:facet name="header">
                     #{msg['wordLists']}
                 </f:facet>
@@ -29,7 +30,8 @@
                     <h:outputText value="#{administration.getResoluciones(lista)}"/>
                 </p:column>
                 <p:column headerText="#{msg['actionsColumn']}" style="width: 15%">
-                    <p:commandButton icon="fa fa-remove" type="button" value="#{msg['removeButton']}" action="#{administration.removeLista(lista)}"/>
+                    <p:commandButton icon="fa fa-remove" value="#{msg['removeButton']}" 
+                                     actionListener="#{administration.removeLista(lista)}" update="adminform:growl adminform:tablaListasPalabras :adminform:tablaRecursos :adminform:tablaPalabras"/>
                 </p:column>
             </p:dataTable>
         </div>
@@ -40,13 +42,16 @@
                 <p:row>
                     <h:outputLabel value="#{msg['languageCode']}" for="adminform:inputLanguage"/></p:row>
                 <p:row><p:inputText id="inputLanguage" value="#{administration.codigoIdioma}">
-                        <p:ajax event="keyup" update="adminform:languageString" listener="#{administration.onCodigoIdiomaChanged}"/>
+                        <p:ajax event="keyup" update="languageString" listener="#{administration.onCodigoIdiomaChanged}"/>
                     </p:inputText>
-                    <p:commandButton icon="fa fa-plus" type="button" value="#{msg['addButton']}"/>
+                    <p:commandButton icon="fa fa-plus" value="#{msg['addButton']}" 
+                                     actionListener="#{administration.aniadirListaDePalabras}"
+                                     update="adminform:growl adminform:tablaListasPalabras"/>
                 </p:row>
                 <p:row><h:outputText id="languageString" value="#{administration.cadenaIdioma}"/></p:row>
             </p:panelGrid>
         </div>
     </div>
+    
 </ui:composition>
 
