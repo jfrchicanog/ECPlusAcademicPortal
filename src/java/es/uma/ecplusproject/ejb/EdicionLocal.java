@@ -20,5 +20,7 @@ public interface EdicionLocal {
     public List<Palabra> palabrasDeLista(ListaPalabras lista);
     public void aniadirListaPalabras(ListaPalabras lista) throws ECPlusBusinessException;
     public void eliminarListaPalabras(ListaPalabras lista) throws ECPlusBusinessException;
+    public Palabra editarPalabra(Palabra palabra) throws ECPlusBusinessException;
+    public Palabra aniadirPalabra(Palabra palabra) throws ECPlusBusinessException;
     
 }

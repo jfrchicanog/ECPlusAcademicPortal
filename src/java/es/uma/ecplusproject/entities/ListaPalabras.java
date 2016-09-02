@@ -49,8 +49,7 @@ public class ListaPalabras implements Serializable {
     @Column(name="hash")
     @MapKeyColumn(name="resolucion")
     private Map<Resolucion, String> hashes;
-    @OneToMany(cascade={CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @JoinColumn(name="listapalabras")
+    @OneToMany(cascade={CascadeType.MERGE}, fetch = FetchType.EAGER, mappedBy = "listaPalabras")
     @OrderBy("nombre ASC")
     private List<Palabra> palabras;
 

@@ -20,14 +20,25 @@
                 <f:facet name="header">
                     #{msg.wordsFor} #{administration.cadenaIdiomaSeleccionado}
                 </f:facet>
-                
+
                 <p:ajax event="rowSelect" update=":adminform:tablaRecursos"/>
+                <p:ajax event="rowEdit" listener="#{administration.edicionPalabra}" update=":adminform:tablaListasPalabras"/>
 
                 <p:column headerText="#{msg['idColumn']}" filterBy="#{palabra.id}" filterMatchMode="exact" sortBy="#{palabra.id}" rendered="true">
                     <h:outputText value="#{palabra.id}"/>
                 </p:column>
                 <p:column headerText="#{msg['wordColumn']}" filterBy="#{palabra.nombre}" filterMatchMode="contains" sortBy="#{palabra.nombre}" >
-                    <h:outputText value="#{palabra.nombre}"/>
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{palabra.nombre}"/></f:facet>
+                        <f:facet name="input"><p:inputText value="#{palabra.nombre}" /></f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="#{msg.replaceableIcon}" >
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{palabra.iconoReemplazable?msg.yes:msg.no}"/></f:facet>
+                        <f:facet name="input">
+                            <p:selectBooleanButton value="#{palabra.iconoReemplazable}" onLabel="#{msg.yes}" offLabel="#{msg.no}" /></f:facet>
+                    </p:cellEditor>
                 </p:column>
                 <p:column headerText="#{msg['categoryColumn']}" rendered="true" >
                 </p:column>
@@ -48,23 +59,28 @@
     </div>
     <div  class="ui-grid-row">
         <div class="ui-grid-col-12">
-            <p:fieldset legend="#{msg.newWord}" >
-                <p:outputLabel value="#{msg.wordColumn}" for="nombrePalabra"/>
-                <p:inputText id="nombrePalabra"/>
-                <p:outputLabel value="#{msg.categoryColumn}" for="categoriaPalabra"/>
-                <p:selectOneMenu id="categoriaPalabra">
-                    <f:selectItem itemValue="" itemLabel="#{msg.noneFem}"/>
-                    <f:selectItems value="#{administration.categorias}" var="categoria" itemLabel="#{categoria.nombre}" itemValue="#{categoria.id}"/>
-                </p:selectOneMenu>
-                <p:outputLabel value="#{msg.advancedColumn}" for="avanzadaPalabra"/>
-                <p:selectBooleanCheckbox id="avanzadaPalabra"/>
-                <p:outputLabel for="contrarioPalabra" value="#{msg.oppositeColumn}"  />
-                <p:selectOneMenu id="contrarioPalabra" filter="true" filterMatchMode="startsWith">
-                    <f:selectItem itemLabel="#{msg.noneMale}" itemValue=""/>
-                    <f:selectItems value="#{administration.palabras}" var="palabra" itemLabel="#{palabra.nombre}" itemValue="#{palabra.id}" />
-                </p:selectOneMenu>
-                <p:commandButton icon="fa fa-plus"/>
-            </p:fieldset>
+            <ui:fragment id="nuevaPalabra">
+                <p:fieldset legend="#{msg.newWord}" >
+                    <p:outputLabel value="#{msg.wordColumn}" for="nombrePalabra"/>
+                    <p:inputText id="nombrePalabra" value="#{administration.nuevaPalabra.nombre}"/>
+                    <!--
+                    <p:outputLabel value="#{msg.categoryColumn}" for="categoriaPalabra" />
+                    <p:selectOneMenu id="categoriaPalabra">
+                        <f:selectItem itemValue="" itemLabel="#{msg.noneFem}"/>
+                        <f:selectItems value="#{administration.categorias}" var="categoria" itemLabel="#{categoria.nombre}" itemValue="#{categoria.id}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="#{msg.advancedColumn}" for="avanzadaPalabra"/>
+                    <p:selectBooleanCheckbox id="avanzadaPalabra"/>
+                    <p:outputLabel for="contrarioPalabra" value="#{msg.oppositeColumn}"  />
+                    <p:selectOneMenu id="contrarioPalabra" filter="true" filterMatchMode="startsWith">
+                        <f:selectItem itemLabel="#{msg.noneMale}" itemValue=""/>
+                        <f:selectItems value="#{administration.palabras}" var="palabra" itemLabel="#{palabra.nombre}" itemValue="#{palabra.id}" />
+                    </p:selectOneMenu> -->
+                    <p:outputLabel value="#{msg.replaceableIcon}" for="iconoReemplazablePalabra"/>
+                    <p:selectBooleanButton id="iconoReemplazablePalabra" value="#{administration.nuevaPalabra.iconoReemplazable}" onLabel="#{msg.yes}" offLabel="#{msg.no}" />
+                    <p:commandButton icon="fa fa-plus" actionListener="#{administration.aniadirPalabra}" update=":adminform:tablaListasPalabras :adminform:tablaPalabras nombrePalabra iconoReemplazablePalabra"/>
+                </p:fieldset>
+            </ui:fragment>
         </div>
     </div>
 </ui:composition>

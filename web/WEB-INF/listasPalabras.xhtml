@@ -18,7 +18,7 @@
                     #{msg['wordLists']}
                 </f:facet>
 
-                <p:ajax event="rowSelect" listener="#{administration.onListaSeleccionada}" update=":adminform:tablaPalabras :adminform:contrarioPalabra" oncomplete="PF('wordsTable').clearFilters()"/>
+                <p:ajax event="rowSelect" listener="#{administration.onListaSeleccionada}" update=":adminform:tablaPalabras" oncomplete="PF('wordsTable').clearFilters()"/>
 
                 <p:column headerText="#{msg['idColumn']}" filterBy="#{lista.id}" filterMatchMode="exact" sortBy="#{lista.id}" style="width: 15%">
                     <h:outputText value="#{lista.id}"/>

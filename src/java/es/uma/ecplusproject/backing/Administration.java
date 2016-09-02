@@ -18,7 +18,11 @@ import es.uma.ecplusproject.entities.RecursoAudioVisual;
 import es.uma.ecplusproject.entities.Resolucion;
 import es.uma.ecplusproject.entities.Video;
 import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -33,6 +37,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -51,21 +56,28 @@ public class Administration implements Serializable {
     private LocaleBean localeBean;
     @Inject
     private EdicionLocal edicion;
-    
 
     private ListaPalabras listaSeleccionada;
     private String codigoIdioma;
     private String cadenaIdioma;
     private Palabra palabraSeleccionada;
 
+    private Palabra nuevaPalabra;
+
     // Cache
     private List<ListaPalabras> listasPalabras;
     private List<Categoria> categorias;
     private List<Palabra> palabras;
     private List<RecursoAudioVisual> recursos;
-    
-    
+
     public Administration() {
+    }
+
+    public Palabra getNuevaPalabra() {
+        if (nuevaPalabra == null) {
+            nuevaPalabra = new Palabra();
+        }
+        return nuevaPalabra;
     }
 
     public Palabra getPalabraSeleccionada() {
@@ -87,12 +99,12 @@ public class Administration implements Serializable {
     public void setCodigoIdioma(String codigoIdioma) {
         this.codigoIdioma = codigoIdioma;
     }
-    
+
     public List<ListaPalabras> getListaPalabras() {
         if (listasPalabras != null) {
             return listasPalabras;
         } else {
-            return listasPalabras=fetchListasPalabras();
+            return listasPalabras = fetchListasPalabras();
         }
     }
 
@@ -109,22 +121,22 @@ public class Administration implements Serializable {
     public void removeLista(ListaPalabras lista) {
         try {
             edicion.eliminarListaPalabras(lista);
-            listasPalabras=null;
-            
+            listasPalabras = null;
+
             if (listaSeleccionada.equals(lista)) {
-                listaSeleccionada=null;
-                palabraSeleccionada=null;
-                palabras=null;
-                categorias=null;
-                recursos=null;
+                listaSeleccionada = null;
+                palabraSeleccionada = null;
+                palabras = null;
+                categorias = null;
+                recursos = null;
             }
-            
+
         } catch (ListWithWordsException e) {
             addMessage(e.getMessage());
         } catch (ECPlusBusinessException e) {
             System.out.println(e.getMessage());
         }
-        
+
         // TODO
         System.out.println("remove");
     }
@@ -135,10 +147,10 @@ public class Administration implements Serializable {
 
     public void setListaSeleccionada(ListaPalabras listaSeleccionada) {
         if (this.listaSeleccionada != null && !this.listaSeleccionada.equals(listaSeleccionada)) {
-            palabras=null;
+            palabras = null;
         }
         this.listaSeleccionada = listaSeleccionada;
-        
+
     }
 
     public void onListaSeleccionada(SelectEvent event) {
@@ -160,17 +172,17 @@ public class Administration implements Serializable {
             return "";
         }
     }
-    
+
     public void ficheroSubido(FileUploadEvent event) {
         // TODO
-        
+
     }
 
     public List<Categoria> getCategorias() {
-        if (categorias!=null) {
+        if (categorias != null) {
             return categorias;
         } else {
-            return categorias=createCategorias();
+            return categorias = createCategorias();
         }
     }
 
@@ -196,7 +208,7 @@ public class Administration implements Serializable {
         }
 
     }
-    
+
     public String getResolucionesPalabra(Palabra palabra) {
         Map<Resolucion, String> map = palabra.getHashes();
         return map.get(Resolucion.BAJA) + ",\n" + map.get(Resolucion.MEDIA) + ",\n" + map.get(Resolucion.ALTA);
@@ -217,23 +229,23 @@ public class Administration implements Serializable {
             return localeBean.getDisplayLanguageForLocale(new Locale(listaSeleccionada.getIdioma()));
         }
     }
-    
+
     public String getCadenaPalabraSeleccionada() {
         if (palabraSeleccionada == null) {
             return ResourceBundle.getBundle(MENSAJES_BUNDLE).getString("shouldSelectAWord");
         } else {
-            return palabraSeleccionada.getNombre() + " ("+palabraSeleccionada.getId()+")";
+            return palabraSeleccionada.getNombre() + " (" + palabraSeleccionada.getId() + ")";
         }
     }
-    
+
     public Set<RecursoAudioVisual> getRecursosAudiovisuales() {
-        if (palabraSeleccionada!= null) {
+        if (palabraSeleccionada != null) {
             return palabraSeleccionada.getAudiovisuales();
         } else {
             return null;
         }
     }
-    
+
     public String getCadenaTipoRecurso(RecursoAudioVisual rav) {
         if (rav instanceof Pictograma) {
             return ResourceBundle.getBundle(MENSAJES_BUNDLE).getString("pictogram");
@@ -245,9 +257,8 @@ public class Administration implements Serializable {
             return ResourceBundle.getBundle(MENSAJES_BUNDLE).getString("unknownType");
         }
     }
-    
+
     public void aniadirListaDePalabras() {
-        // TODO
         ListaPalabras nuevaLista = new ListaPalabras();
         nuevaLista.setIdioma(codigoIdioma);
         try {
@@ -258,13 +269,34 @@ public class Administration implements Serializable {
         } catch (ECPlusBusinessException e) {
             System.out.println(e.getMessage());
         }
-        
-        
     }
-    
+
     private void addMessage(String summary) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary,  null);
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, null);
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
-    
+
+    public void edicionPalabra(RowEditEvent event) {
+        Palabra palabra = (Palabra) event.getObject();
+        try {
+            palabra = edicion.editarPalabra(palabra);
+            listaSeleccionada.setHashes(palabra.getListaPalabras().getHashes());
+        } catch (ECPlusBusinessException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void aniadirPalabra() {
+        try {
+            nuevaPalabra.setListaPalabras(listaSeleccionada);
+            Palabra insertada = edicion.aniadirPalabra(nuevaPalabra);
+            listaSeleccionada.setHashes(insertada.getListaPalabras().getHashes());
+            
+            palabras = null;
+            nuevaPalabra = new Palabra();
+        } catch (ECPlusBusinessException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 }

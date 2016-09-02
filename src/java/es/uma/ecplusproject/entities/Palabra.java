@@ -20,6 +20,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
@@ -49,6 +50,17 @@ public class Palabra implements Serializable {
     private Set<RecursoAudioVisual> audiovisuales;
     @ManyToOne(cascade={CascadeType.PERSIST})
     private RecursoAudioVisual icono;
+    @ManyToOne
+    @JoinColumn(name="listapalabras")
+    private ListaPalabras listaPalabras;
+
+    public ListaPalabras getListaPalabras() {
+        return listaPalabras;
+    }
+
+    public void setListaPalabras(ListaPalabras listaPalabras) {
+        this.listaPalabras = listaPalabras;
+    }
     @Transient
     private RecursoAudioVisual iconoReemplazado;
 
