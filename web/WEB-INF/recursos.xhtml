@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" >
+
+    <p:fieldset legend="#{msg.resourcesFor} #{administration.cadenaPalabraSeleccionada}">
+        <p:dataTable id="tablaRecursos" var="recurso" value="#{administration.recursosAudiovisuales}" 
+                     widgetVar="resourceTable" emptyMessage="#{msg.noResource}"
+                     paginator="false">
+            <f:facet name="header">
+                #{msg.resourcesFor} #{administration.cadenaPalabraSeleccionada}
+            </f:facet>
+
+            <p:column headerText="#{msg.idColumn}" >
+                <h:outputText value="#{recurso.id}"/>
+            </p:column>
+
+            <p:column headerText="#{msg.resourceType}" >
+                <h:outputText value="#{administration.getCadenaTipoRecurso(recurso)}"/>
+            </p:column>
+
+            <p:column headerText="#{msg.iconColumn}" >
+                <h:outputText styleClass="fa fa-check" rendered="#{administration.palabraSeleccionada.icono eq recurso}"/>
+            </p:column>
+
+            <p:column headerText="#{msg.BAJA}">
+                <p:lightBox>
+                    <h:outputLink value="#" title="#{recurso.getFichero('BAJA')}">
+                        <h:outputText value="#{recurso.getFichero('BAJA')}"/>
+                    </h:outputLink>
+                    <f:facet name="inline">
+                        <div style="width:500px">
+                            <ui:include src="/WEB-INF/media.xhtml">
+                                <ui:param name="recurso" value="#{recurso}"/>
+                                <ui:param name="resolucion" value="BAJA"/>
+                            </ui:include>
+                        </div>
+                    </f:facet>
+                </p:lightBox>
+            </p:column>
+
+            <p:column headerText="#{msg.MEDIA}">
+                <p:lightBox>
+                    <h:outputLink value="#" title="#{recurso.getFichero('MEDIA')}">
+                        <h:outputText value="#{recurso.getFichero('MEDIA')}"/>
+                    </h:outputLink>
+                    <f:facet name="inline">
+                        <div style="width:500px">
+                            <ui:include src="/WEB-INF/media.xhtml">
+                                <ui:param name="recurso" value="#{recurso}"/>
+                                <ui:param name="resolucion" value="MEDIA"/>
+                            </ui:include>
+                        </div>
+                    </f:facet>
+                </p:lightBox>
+            </p:column>
+
+            <p:column headerText="#{msg.ALTA}">
+                <p:lightBox>
+                    <h:outputLink value="#" title="#{recurso.getFichero('ALTA')}">
+                        <h:outputText value="#{recurso.getFichero('ALTA')}"/>
+                    </h:outputLink>
+                    <f:facet name="inline">
+                        <div style="width:500px">
+                            <ui:include src="/WEB-INF/media.xhtml">
+                                <ui:param name="recurso" value="#{recurso}"/>
+                                <ui:param name="resolucion" value="ALTA"/>
+                            </ui:include>
+                        </div>
+                    </f:facet>
+                </p:lightBox>
+            </p:column>
+
+            <p:column headerText="#{msg.state}">
+                #{msg.resourceReady}
+            </p:column>
+
+            <p:column headerText="#{msg.preview}">
+                <div style="width:50px">
+                    <ui:include src="/WEB-INF/media.xhtml">
+                        <ui:param name="recurso" value="#{recurso}"/>
+                        <ui:param name="resolucion" value="BAJA"/>
+                    </ui:include>
+                </div>
+            </p:column>
+
+            <p:column headerText="#{msg.actionsColumn}">
+                <p:commandLink styleClass="fa fa-remove"/>
+            </p:column>
+
+        </p:dataTable>
+        <p:fileUpload fileUploadListener="#{administration.ficheroSubido}" mode="advanced" dragDropSupport="true" auto="true" multiple="true"
+                      sizeLimit="10000000" fileLimit="3" allowTypes="/(\.|\/)(mp4|jpe?g|svg)$/" label="#{msg.chooseFile}"
+                      fileLimitMessage="#{msg.fileLimit}" invalidFileMessage="#{msg.fileTypeNotAllowed}" invalidSizeMessage="#{msg.sizeLimitInFile}"/>
+    </p:fieldset>
+
+
+
+</ui:composition>
+

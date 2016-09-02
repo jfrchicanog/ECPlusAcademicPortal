@@ -39,7 +39,7 @@ public class Palabra implements Serializable {
     private Long id;
     private String nombre;
     private Boolean iconoReemplazable;
-    @ElementCollection
+    @ElementCollection (fetch = FetchType.EAGER)
     @MapKeyEnumerated(EnumType.STRING)
     @CollectionTable(name = "HashesPalabra")
     @Column(name="hash")

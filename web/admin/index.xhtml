@@ -5,7 +5,8 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
     <h:head>
         <title>Enhanging Communication (EC+): #{msg['academicPortalAdmin']}</title>
@@ -21,56 +22,23 @@
             <div class="ui-grid ui-grid-responsive">
                 <div class="ui-grid-row">
                     <div class="ui-grid-col-8"> 
-                        <div class="ui-grid-row">
-                            <div class="ui-grid-col-12"> 
-                                <p:dataTable var="lista" value="#{administration.listaPalabras}" widgetVar="wordListTable"
-                                             emptyMessage="#{msg['noWordLists']}"
-                                             paginator="false"
-                                             selectionMode="single"
-                                             selection="#{administration.listaSeleccionada}"
-                                             rowKey="#{lista.id}">
-                                    <f:facet name="header">
-                                        #{msg['wordLists']}
-                                    </f:facet>
-
-                                    <p:ajax event="rowSelect" listener="#{administration.onListaSeleccionada}" />
-                                    <p:ajax event="rowUnselect" listener="#{administration.onListaDeseleccionada}"/>
-
-                                    <p:column headerText="#{msg['idColumn']}" filterBy="#{lista.id}" filterMatchMode="exact" sortBy="#{lista.id}" style="width: 15%">
-                                        <h:outputText value="#{lista.id}"/>
-                                    </p:column>
-                                    <p:column headerText="#{msg['languageColumn']}" filterBy="#{lista.idioma}" filterMatchMode="exact" sortBy="#{lista.idioma}" style="width: 15%">
-                                        <h:outputText value="#{lista.idioma}"/>
-                                    </p:column>
-                                    <p:column headerText="#{msg['hashesColumn']}">
-                                        <h:outputText value="#{administration.getResoluciones(lista)}"/>
-                                    </p:column>
-                                    <p:column headerText="#{msg['actionsColumn']}" style="width: 15%">
-                                        <p:commandButton icon="fa fa-remove" type="button" value="#{msg['removeButton']}" action="#{administration.removeLista(lista)}"/>
-                                    </p:column>
-                                </p:dataTable>
-                            </div>
-                        </div>
-                        <div  class="ui-grid-row">
-                            <div class="ui-grid-col-12">
-                                <p:panelGrid columns="1">
-                                    <p:row>
-                                        <h:outputLabel value="#{msg['languageCode']}" for="adminform:inputLanguage"/></p:row>
-                                    <p:row><p:inputText id="inputLanguage" value="#{administration.codigoIdioma}">
-                                            <p:ajax event="keyup" update="adminform:languageString" listener="#{administration.onCodigoIdiomaChanged}"/>
-                                        </p:inputText>
-                                        <p:commandButton icon="fa fa-plus" type="button" value="#{msg['addButton']}"/>
-                                    </p:row>
-                                    <p:row><h:outputText id="languageString" value="#{administration.cadenaIdioma}"/></p:row>
-                                </p:panelGrid>
-                            </div>
-
-
-                        </div>
+                        <ui:include src="/WEB-INF/listasPalabras.xhtml"/>
                     </div>
 
                     <div class="ui-grid-col-4">
-
+                        <ui:include src="/WEB-INF/categorias.xhtml"/>
+                    </div>
+                </div>
+                
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12"> 
+                        <ui:include src="/WEB-INF/palabras.xhtml"/>
+                    </div>
+                </div>
+                
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12"> 
+                        <ui:include src="/WEB-INF/recursos.xhtml"/>
                     </div>
                 </div>
             </div>

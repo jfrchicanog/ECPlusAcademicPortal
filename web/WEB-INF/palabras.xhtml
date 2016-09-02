@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" id="panelPalabras">
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-12">
+            <p:dataTable id="tablaPalabras"  var="palabra" value="#{administration.palabras}" widgetVar="wordsTable"
+                         emptyMessage="#{msg['nowords']}"
+                         paginator="true" rows="20"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                         editable="true"
+                         selection="#{administration.palabraSeleccionada}"
+                         selectionMode="single"
+                         resizableColumns="true"
+                         rowKey="#{palabra.id}">
+
+                <f:facet name="header">
+                    #{msg.wordsFor} #{administration.cadenaIdiomaSeleccionado}
+                </f:facet>
+                
+                <p:ajax event="rowSelect" update=":adminform:tablaRecursos"/>
+
+                <p:column headerText="#{msg['idColumn']}" filterBy="#{palabra.id}" filterMatchMode="exact" sortBy="#{palabra.id}" rendered="true">
+                    <h:outputText value="#{palabra.id}"/>
+                </p:column>
+                <p:column headerText="#{msg['wordColumn']}" filterBy="#{palabra.nombre}" filterMatchMode="contains" sortBy="#{palabra.nombre}" >
+                    <h:outputText value="#{palabra.nombre}"/>
+                </p:column>
+                <p:column headerText="#{msg['categoryColumn']}" rendered="true" >
+                </p:column>
+                <p:column headerText="#{msg['advancedColumn']}" rendered="true">
+                </p:column>
+                <p:column headerText="#{msg['oppositeColumn']}" rendered="true">
+                </p:column>
+                <p:column headerText="#{msg.hashesColumn}" rendered="true" style="white-space: normal">
+                    <h:outputText value="#{administration.getResolucionesPalabra(palabra)}"/>
+                </p:column>
+                <p:column headerText="#{msg.actionsColumn}" rendered="true">
+                    <p:rowEditor/>
+                    <p:commandButton icon="fa fa-remove" />
+                </p:column>
+            </p:dataTable>
+
+        </div>
+    </div>
+    <div  class="ui-grid-row">
+        <div class="ui-grid-col-12">
+            <p:fieldset legend="#{msg.newWord}" >
+                <p:outputLabel value="#{msg.wordColumn}" for="nombrePalabra"/>
+                <p:inputText id="nombrePalabra"/>
+                <p:outputLabel value="#{msg.categoryColumn}" for="categoriaPalabra"/>
+                <p:selectOneMenu id="categoriaPalabra">
+                    <f:selectItem itemValue="" itemLabel="#{msg.noneFem}"/>
+                    <f:selectItems value="#{administration.categorias}" var="categoria" itemLabel="#{categoria.nombre}" itemValue="#{categoria.id}"/>
+                </p:selectOneMenu>
+                <p:outputLabel value="#{msg.advancedColumn}" for="avanzadaPalabra"/>
+                <p:selectBooleanCheckbox id="avanzadaPalabra"/>
+                <p:outputLabel for="contrarioPalabra" value="#{msg.oppositeColumn}"  />
+                <p:selectOneMenu id="contrarioPalabra" filter="true" filterMatchMode="startsWith">
+                    <f:selectItem itemLabel="#{msg.noneMale}" itemValue=""/>
+                    <f:selectItems value="#{administration.palabras}" var="palabra" itemLabel="#{palabra.nombre}" itemValue="#{palabra.id}" />
+                </p:selectOneMenu>
+                <p:commandButton icon="fa fa-plus"/>
+            </p:fieldset>
+        </div>
+    </div>
+</ui:composition>
+

@@ -5,7 +5,8 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
 
     <h:head>
         <title>Enhanging Communication (EC+): #{msg['academicPortal']}</title>
@@ -53,7 +54,7 @@
                                              paginator="true" rows="20"
                                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
 
-                                    <p:column headerText="#{msg['idColumn']}" filterBy="#{palabra.id}" filterMatchMode="exact" sortBy="#{palabra.id}" rendered="false">
+                                    <p:column headerText="#{msg['idColumn']}" filterBy="#{palabra.id}" filterMatchMode="exact" sortBy="#{palabra.id}" rendered="#{request.isUserInRole('administrador')}">
                                         <h:outputText value="#{palabra.id}"/>
                                     </p:column>
                                     <p:column headerText="#{msg['wordColumn']}" filterBy="#{palabra.nombre}" filterMatchMode="contains" sortBy="#{palabra.nombre}" >
@@ -77,24 +78,10 @@
                                 <p:dataGrid emptyMessage="#{msg['noWordSelected']}" id="audiovisual" value="#{content.recursoAudioVisualForWord}" var="rav" paginator="false" columns="2" >
                                     <p:tabView value="#{content.resoluciones}" var="resolucion" dynamic="true" >
                                         <p:tab title="#{content.getLocalizedStringForResolution(resolucion)}">
-
-                                            <h:panelGroup rendered="#{content.esPictograma(rav)}" layout="block" id ="pictograma">
-                                                <object onload="recalcula(event)" width="100%" type="image/svg+xml" data="#{content.getPictogramaURL(rav.getFichero(fn:toUpperCase(resolucion)))}">
-                                                    Your browser does not support SVG
-                                                </object>
-
-                                            </h:panelGroup>
-                                            <h:graphicImage rendered="#{content.esFoto(rav)}" value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" width="90%"/>
-                                            <h:panelGroup rendered="#{content.esVideo(rav)}" layout="block" id ="video">
-                                                <video id="video" width="90%" controls="controls">
-                                                    <source src="#{content.getVideoURL(rav.getFichero(fn:toUpperCase(resolucion)))}" type="video/mp4" />
-                                                </video>
-                                            </h:panelGroup>
-
-                                            <!--
-                                            <video width="90%" src="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" rendered="#{content.esVideo(rav)}"/>
-                                            <h:graphicImage value="#{content.getImageURL(rav.getFichero(fn:toUpperCase(resolucion)))}" width="90%"/>
-                                            -->
+                                            <ui:include src="/WEB-INF/media.xhtml">
+                                                <ui:param name="recurso" value="#{rav}"/>
+                                                <ui:param name="resolucion" value="#{resolucion}"/>
+                                            </ui:include>
                                         </p:tab>
                                     </p:tabView>
 
