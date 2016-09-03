@@ -14,7 +14,7 @@
             <env-entry>
                 <env-entry-name>ecplus.resources.FILES_DIR</env-entry-name>
                 <env-entry-type>java.lang.String</env-entry-type>
-                <env-entry-value>/Users/francis/Documents/investigacion/Proyectos/ECPlusProject/aplicacion/hashes</env-entry-value>
+                <env-entry-value>/var/ecplus-ap/hashes</env-entry-value>
             </env-entry>
         </session>
     </enterprise-beans>
