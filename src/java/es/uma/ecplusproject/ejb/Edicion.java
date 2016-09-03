@@ -177,7 +177,9 @@ public class Edicion implements EdicionLocal {
         }
 
         File destino = new File(filesDir, hash.toLowerCase());
-        Files.copy(fichero.toPath(), destino.toPath());
+        if (!destino.exists()) {
+            Files.copy(fichero.toPath(), destino.toPath());
+        }
 
         System.out.println("hash:" + hash);
         return av;
@@ -236,6 +238,22 @@ public class Edicion implements EdicionLocal {
             em.merge(lp);
 
             return editar;
+        } catch (NoSuchAlgorithmException e) {
+            throw new ECPlusBusinessException(e.getMessage());
+        }
+    }
+
+    @Override
+    public ListaPalabras eliminarPalabra(Palabra palabra) throws ECPlusBusinessException {
+        try {
+            Palabra eliminar = em.merge(palabra);
+            ListaPalabras lp = eliminar.getListaPalabras();
+
+            eliminar.setListaPalabras(null);
+            lp.removePalabra(eliminar);
+            em.remove(eliminar);
+            recalculaHashes(lp);
+            return lp;
         } catch (NoSuchAlgorithmException e) {
             throw new ECPlusBusinessException(e.getMessage());
         }

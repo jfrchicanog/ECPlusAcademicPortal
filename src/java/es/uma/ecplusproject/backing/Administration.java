@@ -321,9 +321,24 @@ public class Administration implements Serializable {
             palabraSeleccionada.setAudiovisuales(modificada.getAudiovisuales());
             listaSeleccionada.setHashes(modificada.getListaPalabras().getHashes());
 
-        } catch  (ECPlusBusinessException e) {
+        } catch (ECPlusBusinessException e) {
             Logger.getLogger(Administration.class.getName()).log(Level.SEVERE, e.getMessage());
         }
+    }
+
+    public void eliminarPalabra(Palabra p) {
+        try {
+            ListaPalabras lp = edicion.eliminarPalabra(p);
+            listaSeleccionada.setHashes(lp.getHashes());
+            palabras.remove(p);
+            if (p==palabraSeleccionada) {
+                palabraSeleccionada = null;
+            }
+        } catch (ECPlusBusinessException e) {
+            Logger.getLogger(Administration.class.getName()).log(Level.SEVERE, e.getMessage());
+        }
+
+        // TODO
     }
 
 }

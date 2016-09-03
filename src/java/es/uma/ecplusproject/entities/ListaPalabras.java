@@ -92,6 +92,12 @@ public class ListaPalabras implements Serializable {
         palabras.add(p);
     }
     
+    public void removePalabra(Palabra p) {
+        if (palabras != null) {
+            palabras.remove(p);
+        }
+    }
+    
      public void updateHash(Resolucion res, String hash) {
         if (hashes == null) {
             hashes = new HashMap<>();

@@ -51,7 +51,9 @@
                 </p:column>
                 <p:column headerText="#{msg.actionsColumn}" rendered="true">
                     <p:rowEditor/>
-                    <p:commandButton icon="fa fa-remove" />
+                    <p:commandButton icon="fa fa-remove" actionListener="#{administration.eliminarPalabra(palabra)}" 
+                                     update="adminform:tablaListasPalabras adminform:tablaPalabras adminform:tablaRecursos" 
+                                     oncomplete="PF('wordsTable').clearFilters()"/>
                 </p:column>
             </p:dataTable>
 

@@ -26,5 +26,6 @@ public interface EdicionLocal {
     public Palabra aniadirPalabra(Palabra palabra) throws ECPlusBusinessException;
     public Palabra aniadirRecursoAPalabra(Palabra palabra, String nombreOriginal, File fichero) throws ECPlusBusinessException;
     public Palabra eliminarRecursoDePalabra(Palabra palabra, RecursoAudioVisual rav) throws ECPlusBusinessException;
+    public ListaPalabras eliminarPalabra(Palabra palabra) throws ECPlusBusinessException;
     
 }
