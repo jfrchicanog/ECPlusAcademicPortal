@@ -6,7 +6,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui" >
 
-    <p:fieldset legend="#{msg.resourcesFor} #{administration.cadenaPalabraSeleccionada}">
+    <p:fieldset legend="#{msg.resources}">
         <p:dataTable id="tablaRecursos" var="recurso" value="#{administration.recursosAudiovisuales}" 
                      widgetVar="resourceTable" emptyMessage="#{msg.noResource}"
                      paginator="false">
@@ -23,7 +23,7 @@
             </p:column>
 
             <p:column headerText="#{msg.iconColumn}" >
-                <h:outputText styleClass="fa fa-check" rendered="#{administration.palabraSeleccionada.icono eq recurso}"/>
+                <h:outputText value="#{(administration.palabraSeleccionada.icono eq recurso)?msg.yes:msg.no}"/>
             </p:column>
 
             <p:column headerText="#{msg.BAJA}">

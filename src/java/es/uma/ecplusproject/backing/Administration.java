@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -61,6 +62,7 @@ public class Administration implements Serializable {
     private String codigoIdioma;
     private String cadenaIdioma;
     private Palabra palabraSeleccionada;
+    private RecursoAudioVisual recursoElegido;
 
     private Palabra nuevaPalabra;
 
@@ -70,6 +72,14 @@ public class Administration implements Serializable {
     private List<Palabra> palabras;
 
     public Administration() {
+    }
+
+    public RecursoAudioVisual getRecursoElegido() {
+        return recursoElegido;
+    }
+
+    public void setRecursoElegido(RecursoAudioVisual recursoElegido) {
+        this.recursoElegido = recursoElegido;
     }
 
     public Palabra getNuevaPalabra() {
@@ -331,14 +341,12 @@ public class Administration implements Serializable {
             ListaPalabras lp = edicion.eliminarPalabra(p);
             listaSeleccionada.setHashes(lp.getHashes());
             palabras.remove(p);
-            if (p==palabraSeleccionada) {
+            if (p == palabraSeleccionada) {
                 palabraSeleccionada = null;
             }
         } catch (ECPlusBusinessException e) {
             Logger.getLogger(Administration.class.getName()).log(Level.SEVERE, e.getMessage());
         }
-
-        // TODO
     }
-
+    
 }
