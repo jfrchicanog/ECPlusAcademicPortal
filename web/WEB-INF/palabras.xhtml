@@ -22,7 +22,7 @@
                 </f:facet>
 
                 <p:ajax event="rowSelect" update=":adminform:tablaRecursos"/>
-                <p:ajax event="rowEdit" listener="#{administration.edicionPalabra}" update=":adminform:tablaListasPalabras"/>
+                <p:ajax event="rowEdit" listener="#{administration.edicionPalabra}" update=":adminform:tablaListasPalabras @this"/>
 
                 <p:column headerText="#{msg['idColumn']}" filterBy="#{palabra.id}" filterMatchMode="exact" sortBy="#{palabra.id}" rendered="true">
                     <h:outputText value="#{palabra.id}"/>

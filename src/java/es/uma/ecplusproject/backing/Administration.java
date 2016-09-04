@@ -303,8 +303,9 @@ public class Administration implements Serializable {
     public void edicionPalabra(RowEditEvent event) {
         Palabra palabra = (Palabra) event.getObject();
         try {
-            palabra = edicion.editarPalabra(palabra);
-            listaSeleccionada.setHashes(palabra.getListaPalabras().getHashes());
+            Palabra nueva = edicion.editarPalabra(palabra);
+            palabra.setHashes(nueva.getHashes());
+            listaSeleccionada.setHashes(nueva.getListaPalabras().getHashes());
         } catch (ECPlusBusinessException e) {
             System.out.println(e.getMessage());
         }

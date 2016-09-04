@@ -44,9 +44,10 @@ public class Edicion implements EdicionLocal {
 
     @Override
     public List<Palabra> palabrasDeLista(ListaPalabras listaSeleccionada) {
-        ListaPalabras lista = em.merge(listaSeleccionada);
-        em.refresh(lista);
-        return lista.getPalabras();
+        //ListaPalabras lista = em.merge(listaSeleccionada);
+        //em.refresh(lista);
+        //return lista.getPalabras();
+        return listaSeleccionada.getPalabras();
     }
 
     // Add business logic below. (Right-click in editor and choose
@@ -111,6 +112,7 @@ public class Edicion implements EdicionLocal {
         try {
             calculaHashes(palabra);
             Palabra nueva = em.merge(palabra);
+            System.out.println("Nuevo nombre: "+nueva.getNombre());
             recalculaHashes(nueva.getListaPalabras());
             return nueva;
         } catch (NoSuchAlgorithmException e) {
