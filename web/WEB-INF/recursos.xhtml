@@ -92,10 +92,19 @@
             </p:column>
 
         </p:dataTable>
-        <p:fileUpload fileUploadListener="#{administration.ficheroSubido}" mode="advanced" dragDropSupport="true" auto="true" multiple="true"
-                      sizeLimit="10000000" fileLimit="3" allowTypes="/(\.|\/)(mp4|jpe?g|svg)$/" label="#{msg.chooseFile}"
-                      fileLimitMessage="#{msg.fileLimit}" invalidFileMessage="#{msg.fileTypeNotAllowed}" invalidSizeMessage="#{msg.sizeLimitInFile}"
-                      update="tablaRecursos adminform:tablaPalabras adminform:tablaListasPalabras"/>
+        <p:fileUpload fileUploadListener="#{administration.ficheroSubido}" 
+                      mode="advanced" 
+                      dragDropSupport="true" 
+                      auto="true" 
+                      multiple="true"
+                      sizeLimit="10000000" 
+                      fileLimit="3" 
+                      allowTypes="/(\.|\/)(mp4|jpe?g|svg)$/" 
+                      label="#{msg.chooseFile}"
+                      fileLimitMessage="#{msg.fileLimit}" 
+                      invalidFileMessage="#{msg.fileTypeNotAllowed}" 
+                      invalidSizeMessage="#{msg.sizeLimitInFile}"
+                      update="@this tablaRecursos adminform:tablaPalabras adminform:tablaListasPalabras"/>
     </p:fieldset>
 
 
