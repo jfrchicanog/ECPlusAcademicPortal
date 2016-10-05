@@ -17,6 +17,8 @@
                 <f:facet name="header">
                     #{msg['docsLists']}
                 </f:facet>
+                
+                <p:ajax event="rowSelect" update=":adminform:tablaDocumentos :adminform:editor" oncomplete="PF('docsTable').clearFilters()"/>
 
                 <p:column headerText="#{msg['idColumn']}" filterBy="#{lista.id}" filterMatchMode="exact" sortBy="#{lista.id}" style="width: 15%">
                     <h:outputText value="#{lista.id}"/>
@@ -29,7 +31,7 @@
                 </p:column>
                 <p:column headerText="#{msg['actionsColumn']}" style="width: 15%">
                     <p:commandButton icon="fa fa-remove" value="#{msg['removeButton']}" 
-                                     actionListener="#{documentos.removeLista(lista)}" update="adminform:growl adminform:tablaListasDocumentos"/>
+                                     actionListener="#{documentos.removeLista(lista)}" update="adminform:growl adminform:tablaListasDocumentos :adminform:tablaDocumentos"/>
                 </p:column>
             </p:dataTable>
         </div>

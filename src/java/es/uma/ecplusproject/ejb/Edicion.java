@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -47,9 +49,6 @@ public class Edicion implements EdicionLocal {
 
     @Override
     public List<Palabra> palabrasDeLista(ListaPalabras listaSeleccionada) {
-        //ListaPalabras lista = em.merge(listaSeleccionada);
-        //em.refresh(lista);
-        //return lista.getPalabras();
         return listaSeleccionada.getPalabras();
     }
 
@@ -109,18 +108,16 @@ public class Edicion implements EdicionLocal {
             throw new ListWithWordsException("The list " + lista.getIdioma() + " contains words");
         }
     }
-    
+
     @Override
     public void eliminarListaSindromes(ListaSindromes lista) throws ECPlusBusinessException {
-        ListaSindromes listaParaEliminar = em.merge(lista);
+        ListaSindromes listaParaEliminar = em.merge(lista); // error aquí cuando se elimina una lista que se supone vacía
         if (listaParaEliminar.getSindromes().isEmpty()) {
             em.remove(listaParaEliminar);
         } else {
-            throw new ListWithDocumentsException("The documents list "+lista.getIdioma()+" contains documents");
+            throw new ListWithDocumentsException("The documents list " + lista.getIdioma() + " contains documents");
         }
     }
-    
-    
 
     @Override
     public Palabra editarPalabra(Palabra palabra) throws ECPlusBusinessException {
@@ -294,6 +291,19 @@ public class Edicion implements EdicionLocal {
         }
     }
 
+    private void calculaHash(Sindrome sindrome) throws NoSuchAlgorithmException {
+        String hashContenido;
+        if (sindrome.getContenido()!= null) {
+            hashContenido = calculaHash(sindrome.getContenido());
+        } else {
+            hashContenido = "";
+        }
+        
+        String hash = calculaHash((sindrome.getNombre() + ";" + hashContenido).getBytes());
+
+        sindrome.setHash(hash);
+    }
+
     private void recalculaHash(ListaSindromes ls) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         StringBuilder buffer = new StringBuilder();
         if (ls.getSindromes() == null) {
@@ -313,6 +323,55 @@ public class Edicion implements EdicionLocal {
         ls.setHash(hash);
     }
 
-    
+    @Override
+    public List<Sindrome> documentosDeLista(ListaSindromes lista) {
+        return lista.getSindromes();
+    }
+
+    @Override
+    public Sindrome editarDocumento(Sindrome documento) throws ECPlusBusinessException {
+        try {
+            calculaHash(documento);
+            Sindrome nuevo = em.merge(documento);
+            recalculaHash(nuevo.getListaSindromes());
+            return nuevo;
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            throw new ECPlusBusinessException(e.getMessage());
+        }
+    }
+
+    @Override
+    public ListaSindromes eliminarDocumento(Sindrome documento) throws ECPlusBusinessException {
+        try {
+            Sindrome eliminar = em.merge(documento);
+            ListaSindromes ld = eliminar.getListaSindromes();
+            eliminar.setListaSindromes(null);
+            ld.removeSindrome(eliminar);
+            em.remove(eliminar);
+            recalculaHash(ld);
+            return ld;
+            
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            throw new ECPlusBusinessException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void aniadirDocumento(Sindrome nuevoDocumento) throws ECPlusBusinessException {
+        try {
+            calculaHash(nuevoDocumento);
+            em.persist(nuevoDocumento);
+            ListaSindromes ls = nuevoDocumento.getListaSindromes();
+            if (!ls.getSindromes().contains(nuevoDocumento)) {
+                ls.addSindrome(nuevoDocumento);
+            }
+            
+            recalculaHash(ls);
+            em.merge(ls);
+            
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            throw new ECPlusBusinessException(e.getMessage());
+        }
+    }
 
 }

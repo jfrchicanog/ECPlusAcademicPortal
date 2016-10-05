@@ -222,7 +222,6 @@ public class Administration implements Serializable {
     }
 
     public List<Palabra> getPalabras() {
-        // TODO
         if (palabras != null) {
             return palabras;
         } else {
