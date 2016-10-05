@@ -7,12 +7,15 @@ package es.uma.ecplusproject.ejb;
 
 import es.uma.ecplusproject.entities.Foto;
 import es.uma.ecplusproject.entities.ListaPalabras;
+import es.uma.ecplusproject.entities.ListaSindromes;
 import es.uma.ecplusproject.entities.Palabra;
 import es.uma.ecplusproject.entities.Pictograma;
 import es.uma.ecplusproject.entities.RecursoAudioVisual;
 import es.uma.ecplusproject.entities.Resolucion;
+import es.uma.ecplusproject.entities.Sindrome;
 import es.uma.ecplusproject.entities.Video;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -106,13 +109,25 @@ public class Edicion implements EdicionLocal {
             throw new ListWithWordsException("The list " + lista.getIdioma() + " contains words");
         }
     }
+    
+    @Override
+    public void eliminarListaSindromes(ListaSindromes lista) throws ECPlusBusinessException {
+        ListaSindromes listaParaEliminar = em.merge(lista);
+        if (listaParaEliminar.getSindromes().isEmpty()) {
+            em.remove(listaParaEliminar);
+        } else {
+            throw new ListWithDocumentsException("The documents list "+lista.getIdioma()+" contains documents");
+        }
+    }
+    
+    
 
     @Override
     public Palabra editarPalabra(Palabra palabra) throws ECPlusBusinessException {
         try {
             calculaHashes(palabra);
             Palabra nueva = em.merge(palabra);
-            System.out.println("Nuevo nombre: "+nueva.getNombre());
+            System.out.println("Nuevo nombre: " + nueva.getNombre());
             recalculaHashes(nueva.getListaPalabras());
             return nueva;
         } catch (NoSuchAlgorithmException e) {
@@ -260,5 +275,44 @@ public class Edicion implements EdicionLocal {
             throw new ECPlusBusinessException(e.getMessage());
         }
     }
+
+    @Override
+    public void aniadirListaSindromes(ListaSindromes lista) throws ECPlusBusinessException {
+        try {
+            TypedQuery<ListaSindromes> query = em.createNamedQuery("sindromes-idioma", ListaSindromes.class);
+            query.setParameter("idioma", lista.getIdioma());
+
+            if (query.getResultList().isEmpty()) {
+                recalculaHash(lista);
+                em.persist(lista);
+            } else {
+                throw new AlreadyExistsException("The list with code " + lista.getIdioma() + " already exists");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ECPlusBusinessException(e.getMessage());
+        }
+    }
+
+    private void recalculaHash(ListaSindromes ls) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        StringBuilder buffer = new StringBuilder();
+        if (ls.getSindromes() == null) {
+            ls.setSindromes(new ArrayList<>());
+        }
+
+        List<String> listaHashes = new ArrayList<>();
+        for (Sindrome sindrome : ls.getSindromes()) {
+            listaHashes.add(sindrome.getHash());
+        }
+        Collections.sort(listaHashes);
+        for (String hash : listaHashes) {
+            buffer.append(hash + ";");
+        }
+
+        String hash = calculaHash(buffer.toString().getBytes("UTF-8"));
+        ls.setHash(hash);
+    }
+
+    
 
 }
