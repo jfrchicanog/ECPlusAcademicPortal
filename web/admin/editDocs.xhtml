@@ -8,17 +8,10 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-    <h:head>
-        <title>Enhanging Communication (EC+): #{msg['academicPortalAdmin']}</title>
-        <style type="text/css">
-            body {
-                font-size: 8pt;
-            }
-            .ui-datagrid-column {width: 33%;}
-        </style>
-    </h:head>
-    <h:body>
-        <h:form id="adminform">
+    <ui:composition template="/WEB-INF/templates/admin.xhtml">
+        <ui:param name="activeIndex" value="1"/>
+        <ui:define name="content">
+            <h:form id="adminform">
             <p:growl id="growl" life="5000" />
             <div class="ui-grid ui-grid-responsive">
                 <div class="ui-grid-row">
@@ -37,5 +30,7 @@
                 </div>
             </div>
         </h:form>
-    </h:body>
+        </ui:define>
+    </ui:composition>
+    
 </html>
