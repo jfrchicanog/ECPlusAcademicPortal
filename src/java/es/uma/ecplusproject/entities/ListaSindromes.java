@@ -8,6 +8,7 @@ package es.uma.ecplusproject.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -33,8 +34,7 @@ public class ListaSindromes implements Serializable {
     private Long id;
     private String idioma;
     private String hash;
-    @OneToMany (fetch = FetchType.EAGER)
-    @JoinColumn(name="listasindromes")
+    @OneToMany (fetch = FetchType.EAGER, mappedBy = "listaSindromes")
     private List<Sindrome> sindromes;
 
     public String getIdioma() {
@@ -62,6 +62,12 @@ public class ListaSindromes implements Serializable {
             sindromes = new ArrayList<>();
         }
         sindromes.add(sindrome);
+    }
+    
+    public void removeSindrome(Sindrome sindrome) {
+        if (sindromes != null) {
+            sindromes.remove(sindrome);
+        }
     }
 
     public void setSindromes(List<Sindrome> sindromes) {

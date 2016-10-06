@@ -145,8 +145,6 @@ public class Administration implements Serializable {
             System.out.println(e.getMessage());
         }
 
-        // TODO
-        System.out.println("remove");
     }
 
     public ListaPalabras getListaSeleccionada() {
@@ -224,7 +222,6 @@ public class Administration implements Serializable {
     }
 
     public List<Palabra> getPalabras() {
-        // TODO
         if (palabras != null) {
             return palabras;
         } else {

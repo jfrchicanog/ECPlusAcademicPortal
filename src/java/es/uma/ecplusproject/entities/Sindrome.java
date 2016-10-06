@@ -10,7 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -27,7 +29,20 @@ public class Sindrome implements Serializable {
     @Lob
     private byte [] contenido;
     private String hash;
+    @ManyToOne
+    @JoinColumn(name="listasindromes")
+    private ListaSindromes listaSindromes;
 
+    public ListaSindromes getListaSindromes() {
+        return listaSindromes;
+    }
+
+    public void setListaSindromes(ListaSindromes listaSindromes) {
+        this.listaSindromes = listaSindromes;
+    }
+
+    
+    
     public Long getId() {
         return id;
     }
