@@ -11,7 +11,6 @@
             <p:editor id="editor" widgetVar="editorWidget" value="#{documentos.contenidoSeleccionado}" style="margin-top: 10px" />
             <h:panelGrid columns="2" style="margin-top: 10px">
                 <p:commandButton value="#{msg['save']}" icon="ui-icon-disk" action="#{documentos.editarSeleccionado()}" update=":adminform:tablaListasDocumentos :adminform:tablaDocumentos"/>
-                <p:commandButton value="#{msg['clear']}" type="button" onclick="PF('editorWidget').clear();" icon="ui-icon-close" />
             </h:panelGrid>
         </div>  
     </div>

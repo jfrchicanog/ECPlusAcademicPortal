@@ -27,7 +27,7 @@
                 <p:column headerText="#{msg['idColumn']}" filterBy="#{documento.id}" filterMatchMode="exact" sortBy="#{palabra.id}" rendered="true">
                     <h:outputText value="#{documento.id}"/>
                 </p:column>
-                <p:column headerText="#{msg['wordColumn']}" filterBy="#{documento.nombre}" filterMatchMode="contains" sortBy="#{documento.nombre}" >
+                <p:column headerText="#{msg['docColumn']}" filterBy="#{documento.nombre}" filterMatchMode="contains" sortBy="#{documento.nombre}" >
                     <p:cellEditor>
                         <f:facet name="output"><h:outputText value="#{documento.nombre}"/></f:facet>
                         <f:facet name="input"><p:inputText value="#{documento.nombre}" /></f:facet>
