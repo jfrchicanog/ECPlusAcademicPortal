@@ -299,7 +299,7 @@ public class Edicion implements EdicionLocal {
             hashContenido = "";
         }
         
-        String hash = calculaHash((sindrome.getNombre() + ";" + hashContenido).getBytes());
+        String hash = calculaHash((sindrome.getNombre() + ";" + sindrome.getTipo()+";"+ hashContenido).getBytes());
 
         sindrome.setHash(hash);
     }

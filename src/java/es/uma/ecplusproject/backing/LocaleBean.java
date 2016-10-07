@@ -9,6 +9,7 @@ import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 
@@ -20,6 +21,8 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 public class LocaleBean implements Serializable {
 
+    private static final String MENSAJES_BUNDLE = "mensajes";
+    
     private Locale locale;
     
     /**
@@ -35,6 +38,14 @@ public class LocaleBean implements Serializable {
     
     public String getLocale() {
         return locale.getLanguage();
+    }
+    
+    public ResourceBundle getResourceBundle() {
+        if (locale != null) {
+            return ResourceBundle.getBundle(MENSAJES_BUNDLE, locale);
+        } else {
+            return ResourceBundle.getBundle(MENSAJES_BUNDLE);
+        }
     }
     
     public synchronized void setLocale(String language) {

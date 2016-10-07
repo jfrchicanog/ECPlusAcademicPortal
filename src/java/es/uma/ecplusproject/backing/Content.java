@@ -13,6 +13,7 @@ import es.uma.ecplusproject.entities.Pictograma;
 import es.uma.ecplusproject.entities.RecursoAudioVisual;
 import es.uma.ecplusproject.entities.Resolucion;
 import es.uma.ecplusproject.entities.Sindrome;
+import es.uma.ecplusproject.entities.TipoDocumento;
 import es.uma.ecplusproject.entities.Video;
 import java.io.Serializable;
 import java.nio.charset.Charset;
@@ -27,6 +28,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -39,10 +41,10 @@ import javax.persistence.TypedQuery;
 @ViewScoped
 public class Content implements Serializable {
     
-    private static final String MENSAJES_BUNDLE = "mensajes";
-    
     @PersistenceContext(unitName = "ECplusProjectRSPU")
     private EntityManager em;
+    @Inject
+    private LocaleBean localeBean;
     
     private List<Locale> idiomas;
     private Locale idiomaSeleccionado;
@@ -80,10 +82,18 @@ public class Content implements Serializable {
         return Resolucion.values();
     }
     
-    public String getLocalizedStringForResolution(String resolucion) {
-        return ResourceBundle.getBundle(MENSAJES_BUNDLE).getString(resolucion);
+    public TipoDocumento [] getTiposDocumento() {
+        return TipoDocumento.values();
     }
     
+    public String getLocalizedStringForResolution(String resolucion) {
+        return localeBean.getResourceBundle().getString(resolucion);
+    }
+    
+    public String getLocalizedStringForTipoDocumento(String tipoDocumento) {
+        return localeBean.getResourceBundle().getString(tipoDocumento);
+    }
+
     public String getIdiomaSeleccionado() {
         if (idiomaSeleccionado == null) {
             prepareLanguages();

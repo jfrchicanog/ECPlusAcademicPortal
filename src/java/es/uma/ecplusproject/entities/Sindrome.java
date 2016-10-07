@@ -7,6 +7,8 @@ package es.uma.ecplusproject.entities;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,10 +31,20 @@ public class Sindrome implements Serializable {
     @Lob
     private byte [] contenido;
     private String hash;
+    @Enumerated(EnumType.STRING)
+    private TipoDocumento tipo;
     @ManyToOne
     @JoinColumn(name="listasindromes")
     private ListaSindromes listaSindromes;
 
+    public TipoDocumento getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoDocumento tipo) {
+        this.tipo = tipo;
+    }
+    
     public ListaSindromes getListaSindromes() {
         return listaSindromes;
     }
