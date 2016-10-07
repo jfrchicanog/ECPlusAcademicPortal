@@ -110,6 +110,25 @@
                         </div>
                     </div>
                 </p:tab>
+                <p:tab id="generalities" title="#{msg['generalities']}">
+                    <div class="ui-grid ui-grid-responsive">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <p:dataList var="generality" value="#{content.generalities}" type="unordered" itemType="unordered">
+                                    <p:commandLink  style="text-decoration:none" update=":form:panel:detalleGeneralidad">
+                                        <h:outputText value="#{generality.nombre}"/>
+                                        <f:setPropertyActionListener target="#{content.sindromeElegido}" value="#{generality}"/>
+                                    </p:commandLink>
+                                </p:dataList>
+                            </div>
+
+                            <h:panelGroup layout="block" id ="detalleGeneralidad" styleClass="ui-grid-col-8">
+                                <iframe frameborder="0" width="100%" height="500px" src="#{content.sindromeURL}"></iframe>
+                            </h:panelGroup>
+
+                        </div>
+                    </div>
+                </p:tab>
             </p:tabView>
 
         </h:form>  

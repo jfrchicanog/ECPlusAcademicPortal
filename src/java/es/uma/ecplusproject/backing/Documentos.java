@@ -84,6 +84,7 @@ public class Documentos implements Serializable {
 
     public void setDocumentoSeleccionado(Sindrome documentoSeleccionado) {
         this.documentoSeleccionado = documentoSeleccionado;
+        //System.out.println(documentoSeleccionado.getTipo());
     }
 
     public void edicionDocumento(RowEditEvent event) {
