@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -174,10 +175,23 @@ public class Content implements Serializable {
     }
     
     public List<Sindrome> getSyndromes() {
+        extractSindromes();
+        return sindromes.stream()
+                .filter(s->TipoDocumento.SINDROME.equals(s.getTipo()))
+                .collect(Collectors.toList());
+    }
+
+    private void extractSindromes() {
         if (sindromes == null) {
             sindromes = fetchSyndromes();
         }
-        return sindromes;
+    }
+    
+    public List<Sindrome> getGeneralities() {
+        extractSindromes();
+        return sindromes.stream()
+                .filter(s->TipoDocumento.GENERALIDAD.equals(s.getTipo()))
+                .collect(Collectors.toList());
     }
     
     public String getDetalleSindrome() {
