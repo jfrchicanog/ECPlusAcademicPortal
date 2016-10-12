@@ -41,6 +41,15 @@
                     </p:cellEditor>
                 </p:column>
                 <p:column headerText="#{msg['categoryColumn']}" rendered="true" >
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{palabra.categoria.nombre}"/></f:facet>
+                        <f:facet name="input">
+                            <p:selectOneMenu value="#{palabra.categoria}" converter="categoriaConverter">
+                                <f:selectItem value="#{null}"/>
+                                <f:selectItems value="#{administration.listaSeleccionada.categorias}" var="categoria" itemLabel="#{categoria.nombre}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
                 </p:column>
                 <p:column headerText="#{msg['advancedColumn']}" rendered="true">
                 </p:column>

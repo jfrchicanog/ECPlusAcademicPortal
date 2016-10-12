@@ -5,7 +5,10 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
-    <p:dataTable value="#{administration.categorias}" var="categoria" editable="true">
+    <p:dataTable id="tablaCategorias" value="#{administration.categorias}" var="categoria" editable="true">
+        
+        <p:ajax event="rowEdit" listener="#{administration.edicionCategoria}" update=":adminform:tablaPalabras @this"/>
+        
         <f:facet name="header">
             <h:outputText value="#{msg['categories']}"/>
         </f:facet>
@@ -20,12 +23,16 @@
         </p:column>
         <p:column headerText="#{msg.actionsColumn}">
             <p:rowEditor/>
-            <p:commandButton value="#{msg.removeButton}" icon="fa fa-remove"/>
+            <p:commandButton value="#{msg.removeButton}" icon="fa fa-remove"
+                             actionListener="#{administration.eliminarCategoria(categoria)}" 
+                                     update="adminform:tablaPalabras adminform:tablaCategorias adminform:growl"  
+                             />
         </p:column>
 
     </p:dataTable>
     <p:outputLabel value="#{msg['newCategory']}" for="nuevaCategoria"/>
-    <p:inputText id="nuevaCategoria"/>
-    <p:commandButton icon="fa fa-plus"/>
+    <p:inputText id="nuevaCategoria" value="#{administration.nombreNuevaCategoria}"/>
+    <p:commandButton icon="fa fa-plus" actionListener="#{administration.aniadirCategoria()}"
+                     update=":adminform:tablaCategorias :adminform:nuevaCategoria :adminform:tablaPalabras"/>
 </ui:composition>
 
