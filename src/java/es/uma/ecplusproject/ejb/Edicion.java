@@ -5,6 +5,7 @@
  */
 package es.uma.ecplusproject.ejb;
 
+import es.uma.ecplusproject.entities.Categoria;
 import es.uma.ecplusproject.entities.Foto;
 import es.uma.ecplusproject.entities.ListaPalabras;
 import es.uma.ecplusproject.entities.ListaSindromes;
@@ -293,13 +294,13 @@ public class Edicion implements EdicionLocal {
 
     private void calculaHash(Sindrome sindrome) throws NoSuchAlgorithmException {
         String hashContenido;
-        if (sindrome.getContenido()!= null) {
+        if (sindrome.getContenido() != null) {
             hashContenido = calculaHash(sindrome.getContenido());
         } else {
             hashContenido = "";
         }
-        
-        String hash = calculaHash((sindrome.getNombre() + ";" + sindrome.getTipo()+";"+ hashContenido).getBytes());
+
+        String hash = calculaHash((sindrome.getNombre() + ";" + sindrome.getTipo() + ";" + hashContenido).getBytes());
 
         sindrome.setHash(hash);
     }
@@ -350,7 +351,7 @@ public class Edicion implements EdicionLocal {
             em.remove(eliminar);
             recalculaHash(ld);
             return ld;
-            
+
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             throw new ECPlusBusinessException(e.getMessage());
         }
@@ -365,13 +366,44 @@ public class Edicion implements EdicionLocal {
             if (!ls.getSindromes().contains(nuevoDocumento)) {
                 ls.addSindrome(nuevoDocumento);
             }
-            
+
             recalculaHash(ls);
             em.merge(ls);
-            
+
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             throw new ECPlusBusinessException(e.getMessage());
         }
+    }
+
+    @Override
+    public void aniadirCategoria(Categoria categoria) throws ECPlusBusinessException {
+        em.persist(categoria);
+        ListaPalabras lp = categoria.getListaPalabras();
+        if (!lp.getCategorias().contains(categoria)) {
+            lp.addCategoria(categoria);
+        }
+
+    }
+
+    @Override
+    public void eliminarCategoria(Categoria categoria) throws ECPlusBusinessException {
+
+        Categoria eliminar = em.merge(categoria);
+        TypedQuery<Long> query = em.createQuery("select count(*) from Palabra p where p.categoria=:categoria", Long.class);
+        query.setParameter("categoria", categoria);
+        if (query.getSingleResult() > 0) {
+            throw new CategoryWithWordsException("There exist words with this category: " + categoria.getNombre());
+        } else {
+            ListaPalabras lp = eliminar.getListaPalabras();
+            eliminar.setListaPalabras(null);
+            lp.removeCategoria(eliminar);
+            em.remove(eliminar);
+        }
+    }
+
+    @Override
+    public void editarCategoria(Categoria categoria) throws ECPlusBusinessException {
+        em.merge(categoria);
     }
 
 }
