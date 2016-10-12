@@ -52,6 +52,17 @@ public class Palabra implements Serializable {
     @ManyToOne
     @JoinColumn(name="listapalabras")
     private ListaPalabras listaPalabras;
+    @ManyToOne
+    @JoinColumn(name="categoria")
+    private Categoria categoria;
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
 
     public ListaPalabras getListaPalabras() {
         return listaPalabras;
@@ -60,6 +71,7 @@ public class Palabra implements Serializable {
     public void setListaPalabras(ListaPalabras listaPalabras) {
         this.listaPalabras = listaPalabras;
     }
+    
     @Transient
     private RecursoAudioVisual iconoReemplazado;
 
