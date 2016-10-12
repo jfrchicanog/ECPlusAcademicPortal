@@ -55,6 +55,15 @@ public class Palabra implements Serializable {
     @ManyToOne
     @JoinColumn(name="categoria")
     private Categoria categoria;
+    private Boolean avanzada;
+
+    public Boolean getAvanzada() {
+        return avanzada;
+    }
+
+    public void setAvanzada(Boolean avanzada) {
+        this.avanzada = avanzada;
+    }
 
     public Categoria getCategoria() {
         return categoria;
