@@ -52,6 +52,11 @@
                     </p:cellEditor>
                 </p:column>
                 <p:column headerText="#{msg['advancedColumn']}" rendered="true">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{palabra.avanzada?msg.yes:msg.no}"/></f:facet>
+                        <f:facet name="input">
+                            <p:selectBooleanButton value="#{palabra.avanzada}" onLabel="#{msg.yes}" offLabel="#{msg.no}" /></f:facet>
+                    </p:cellEditor>
                 </p:column>
                 <p:column headerText="#{msg['oppositeColumn']}" rendered="true">
                 </p:column>
