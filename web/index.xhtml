@@ -63,7 +63,7 @@
                                             <f:setPropertyActionListener target="#{content.palabraElegida}" value="#{palabra}"/>
                                         </p:commandLink>
                                     </p:column>
-                                    <p:column headerText="#{msg['categoryColumn']}" rendered="true">
+                                    <p:column headerText="#{msg['categoryColumn']}" rendered="true" sortBy="#{palabra.categoria.nombre}" filterBy="#{palabra.categoria.nombre}" filterMatchMode="contains" >
                                         <h:outputText value="#{palabra.categoria.nombre}"/>
                                     </p:column>
                                     <p:column headerText="#{msg['advancedColumn']}" rendered="false">
