@@ -5,6 +5,7 @@
  */
 package es.uma.ecplusproject.ejb;
 
+import es.uma.ecplusproject.entities.Categoria;
 import es.uma.ecplusproject.entities.ListaPalabras;
 import es.uma.ecplusproject.entities.ListaSindromes;
 import es.uma.ecplusproject.entities.Palabra;
@@ -30,11 +31,18 @@ public interface EdicionLocal {
     public Palabra eliminarRecursoDePalabra(Palabra palabra, RecursoAudioVisual rav) throws ECPlusBusinessException;
     public ListaPalabras eliminarPalabra(Palabra palabra) throws ECPlusBusinessException;
     
+    public void aniadirCategoria(Categoria categoria) throws ECPlusBusinessException;
+    public void eliminarCategoria(Categoria categoria) throws ECPlusBusinessException;
+    public void editarCategoria(Categoria categoria) throws ECPlusBusinessException;
+    
     public void aniadirListaSindromes(ListaSindromes lista) throws ECPlusBusinessException;
     public void eliminarListaSindromes(ListaSindromes lista) throws ECPlusBusinessException;
     public List<Sindrome> documentosDeLista(ListaSindromes lista);
     public Sindrome editarDocumento(Sindrome documento) throws ECPlusBusinessException;
     public ListaSindromes eliminarDocumento(Sindrome documento) throws ECPlusBusinessException;
-    public void aniadirDocumento(Sindrome nuevoDocumento)  throws ECPlusBusinessException;
+    public void aniadirDocumento(Sindrome nuevoDocumento) throws ECPlusBusinessException;
+
+    public List<ListaPalabras> fetchListasPalabras();
+    public List<ListaSindromes> fetchListasindromes();
     
 }

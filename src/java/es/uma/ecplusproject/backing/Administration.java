@@ -6,6 +6,7 @@
 package es.uma.ecplusproject.backing;
 
 import es.uma.ecplusproject.ejb.AlreadyExistsException;
+import es.uma.ecplusproject.ejb.CategoryWithWordsException;
 import es.uma.ecplusproject.ejb.ECPlusBusinessException;
 import es.uma.ecplusproject.ejb.EdicionLocal;
 import es.uma.ecplusproject.ejb.ListWithWordsException;
@@ -16,6 +17,7 @@ import es.uma.ecplusproject.entities.Palabra;
 import es.uma.ecplusproject.entities.Pictograma;
 import es.uma.ecplusproject.entities.RecursoAudioVisual;
 import es.uma.ecplusproject.entities.Resolucion;
+import es.uma.ecplusproject.entities.Sindrome;
 import es.uma.ecplusproject.entities.Video;
 import java.io.File;
 import java.io.IOException;
@@ -51,8 +53,6 @@ public class Administration implements Serializable {
 
     private static final String MENSAJES_BUNDLE = "mensajes";
 
-    @PersistenceContext(unitName = "ECplusProjectRSPU")
-    private EntityManager em;
     @Inject
     private LocaleBean localeBean;
     @Inject
@@ -65,6 +65,7 @@ public class Administration implements Serializable {
     private RecursoAudioVisual recursoElegido;
 
     private Palabra nuevaPalabra;
+    private String nombreNuevaCategoria;
 
     // Cache
     private List<ListaPalabras> listasPalabras;
@@ -113,13 +114,8 @@ public class Administration implements Serializable {
         if (listasPalabras != null) {
             return listasPalabras;
         } else {
-            return listasPalabras = fetchListasPalabras();
+            return listasPalabras = edicion.fetchListasPalabras();
         }
-    }
-
-    private List<ListaPalabras> fetchListasPalabras() {
-        TypedQuery<ListaPalabras> query = em.createNamedQuery("todas-listas-palabras", ListaPalabras.class);
-        return query.getResultList();
     }
 
     public String getResoluciones(ListaPalabras lista) {
@@ -201,10 +197,10 @@ public class Administration implements Serializable {
     }
 
     public List<Categoria> getCategorias() {
-        if (categorias != null) {
-            return categorias;
+        if (listaSeleccionada != null) {
+            return listaSeleccionada.getCategorias();
         } else {
-            return categorias = createCategorias();
+            return null;
         }
     }
 
@@ -292,7 +288,7 @@ public class Administration implements Serializable {
         }
     }
 
-    private void addMessage(String summary) {
+    public static void addMessage(String summary) {
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, null);
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
@@ -300,6 +296,9 @@ public class Administration implements Serializable {
     public void edicionPalabra(RowEditEvent event) {
         Palabra palabra = (Palabra) event.getObject();
         try {
+            int index = listaSeleccionada.getCategorias().indexOf(palabra.getCategoria());
+            palabra.setCategoria(listaSeleccionada.getCategorias().get(index));
+            
             Palabra nueva = edicion.editarPalabra(palabra);
             palabra.setHashes(nueva.getHashes());
             listaSeleccionada.setHashes(nueva.getListaPalabras().getHashes());
@@ -346,5 +345,54 @@ public class Administration implements Serializable {
             Logger.getLogger(Administration.class.getName()).log(Level.SEVERE, e.getMessage());
         }
     }
-    
+
+    public void eliminarCategoria(Categoria cat) {
+        try {
+            edicion.eliminarCategoria(cat);
+            if (listaSeleccionada != null) {
+                listaSeleccionada.removeCategoria(cat);
+            }
+        } catch (CategoryWithWordsException e) {
+            addMessage(e.getMessage());
+        } catch (ECPlusBusinessException e) {
+            Logger.getLogger(Administration.class.getName()).log(Level.SEVERE, e.getMessage());
+        }
+    }
+
+    public void edicionCategoria(RowEditEvent event) {
+        Categoria documento = (Categoria) event.getObject();
+        try {
+            edicion.editarCategoria(documento);
+        } catch (ECPlusBusinessException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public String getNombreNuevaCategoria() {
+        return nombreNuevaCategoria;
+    }
+
+    public void setNombreNuevaCategoria(String nombreNuevaCategoria) {
+        this.nombreNuevaCategoria = nombreNuevaCategoria;
+    }
+
+    public void aniadirCategoria() {
+        try {
+            if (nombreNuevaCategoria != null && listaSeleccionada != null) {
+                Categoria categoria = new Categoria();
+                categoria.setNombre(nombreNuevaCategoria);
+                categoria.setListaPalabras(listaSeleccionada);
+
+                edicion.aniadirCategoria(categoria);
+                if (!listaSeleccionada.getCategorias().contains(categoria)) {
+                    listaSeleccionada.addCategoria(categoria);
+                }
+                
+                nombreNuevaCategoria = "";
+            }
+        } catch (ECPlusBusinessException e) {
+            Logger.getLogger(Administration.class.getName()).log(Level.SEVERE, e.getMessage());
+        }
+    }
+
 }

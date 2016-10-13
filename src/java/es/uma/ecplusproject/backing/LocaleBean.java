@@ -57,5 +57,9 @@ public class LocaleBean implements Serializable {
         return l.getDisplayLanguage(locale);
     }
     
+    public String getDisplayLanguageForLocale(String idioma) {
+        return getDisplayLanguageForLocale(new Locale(idioma));
+    }
+    
     
 }

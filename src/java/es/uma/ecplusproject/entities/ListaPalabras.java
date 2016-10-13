@@ -52,6 +52,16 @@ public class ListaPalabras implements Serializable {
     @OneToMany(cascade={CascadeType.MERGE}, fetch = FetchType.EAGER, mappedBy = "listaPalabras")
     @OrderBy("nombre ASC")
     private List<Palabra> palabras;
+    @OneToMany(fetch=FetchType.EAGER, mappedBy = "listaPalabras")
+    private List<Categoria> categorias;
+
+    public List<Categoria> getCategorias() {
+        return categorias;
+    }
+
+    public void setCategorias(List<Categoria> categorias) {
+        this.categorias = categorias;
+    }
 
     public Long getId() {
         return id;
@@ -95,6 +105,19 @@ public class ListaPalabras implements Serializable {
     public void removePalabra(Palabra p) {
         if (palabras != null) {
             palabras.remove(p);
+        }
+    }
+    
+    public void addCategoria(Categoria cat) {
+        if (categorias == null) {
+            categorias = new ArrayList<>();
+        }
+        categorias.add(cat);
+    }
+    
+    public void removeCategoria(Categoria cat) {
+        if (categorias != null) {
+            categorias.remove(cat);
         }
     }
     
