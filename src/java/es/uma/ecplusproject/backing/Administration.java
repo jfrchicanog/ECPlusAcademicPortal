@@ -53,8 +53,6 @@ public class Administration implements Serializable {
 
     private static final String MENSAJES_BUNDLE = "mensajes";
 
-    @PersistenceContext(unitName = "ECplusProjectRSPU")
-    private EntityManager em;
     @Inject
     private LocaleBean localeBean;
     @Inject
@@ -116,13 +114,8 @@ public class Administration implements Serializable {
         if (listasPalabras != null) {
             return listasPalabras;
         } else {
-            return listasPalabras = fetchListasPalabras();
+            return listasPalabras = edicion.fetchListasPalabras();
         }
-    }
-
-    private List<ListaPalabras> fetchListasPalabras() {
-        TypedQuery<ListaPalabras> query = em.createNamedQuery("todas-listas-palabras", ListaPalabras.class);
-        return query.getResultList();
     }
 
     public String getResoluciones(ListaPalabras lista) {
@@ -295,7 +288,7 @@ public class Administration implements Serializable {
         }
     }
 
-    private void addMessage(String summary) {
+    public static void addMessage(String summary) {
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, null);
         FacesContext.getCurrentInstance().addMessage(null, message);
     }

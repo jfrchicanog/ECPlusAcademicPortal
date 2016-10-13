@@ -40,6 +40,9 @@ public interface EdicionLocal {
     public List<Sindrome> documentosDeLista(ListaSindromes lista);
     public Sindrome editarDocumento(Sindrome documento) throws ECPlusBusinessException;
     public ListaSindromes eliminarDocumento(Sindrome documento) throws ECPlusBusinessException;
-    public void aniadirDocumento(Sindrome nuevoDocumento)  throws ECPlusBusinessException;
+    public void aniadirDocumento(Sindrome nuevoDocumento) throws ECPlusBusinessException;
+
+    public List<ListaPalabras> fetchListasPalabras();
+    public List<ListaSindromes> fetchListasindromes();
     
 }

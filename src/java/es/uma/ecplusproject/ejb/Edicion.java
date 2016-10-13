@@ -406,4 +406,14 @@ public class Edicion implements EdicionLocal {
         em.merge(categoria);
     }
 
+    public List<ListaPalabras> fetchListasPalabras() {
+        TypedQuery<ListaPalabras> query = em.createNamedQuery("todas-listas-palabras", ListaPalabras.class);
+        return query.getResultList();
+    }
+    
+    public List<ListaSindromes> fetchListasindromes() {
+        TypedQuery<ListaSindromes> query = em.createNamedQuery("todas-listas-sindromes", ListaSindromes.class);
+        return query.getResultList();
+    }
+
 }

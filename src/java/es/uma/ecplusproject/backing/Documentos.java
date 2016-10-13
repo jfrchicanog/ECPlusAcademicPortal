@@ -39,8 +39,6 @@ public class Documentos implements Serializable {
 
     private static final String MENSAJES_BUNDLE = "mensajes";
 
-    @PersistenceContext(unitName = "ECplusProjectRSPU")
-    private EntityManager em;
     @Inject
     private LocaleBean localeBean;
     @Inject
@@ -224,13 +222,10 @@ public class Documentos implements Serializable {
         if (listaSindromes != null) {
             return listaSindromes;
         } else {
-            return listaSindromes = fetchListasindromes();
+            return listaSindromes = edicion.fetchListasindromes();
         }
     }
 
-    private List<ListaSindromes> fetchListasindromes() {
-        TypedQuery<ListaSindromes> query = em.createNamedQuery("todas-listas-sindromes", ListaSindromes.class);
-        return query.getResultList();
-    }
+    
 
 }
