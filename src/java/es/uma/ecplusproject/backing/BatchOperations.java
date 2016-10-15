@@ -30,12 +30,57 @@ public class BatchOperations implements Serializable {
     private EdicionLocal edicion;
 
     private List<ListaPalabras> listaPalabras;
+    
     private ListaPalabras listaSeleccionada;
     private Categoria categoriaSeleccionada;
-
+    
     private String resultado;
     private String comandos;
+    
+    private ListaPalabras listaAvanzadaSeleccionada;
+    private boolean avanzada;
+    private String resultadoAvanzada;
+    private String comandosAvanzada;
 
+    public String getListaAvanzadaSeleccionada() {
+        if (listaAvanzadaSeleccionada != null) {
+            return listaAvanzadaSeleccionada.getIdioma();
+        } else {
+            return null;
+        }
+    }
+
+    public void setListaAvanzadaSeleccionada(String listaAvanzadaSeleccionada) {
+        if (listaAvanzadaSeleccionada == null) {
+            this.listaAvanzadaSeleccionada = null;
+        } else {
+            listaPalabras.stream()
+                    .filter(lp -> lp.getIdioma().equals(listaAvanzadaSeleccionada))
+                    .forEach(lp -> this.listaAvanzadaSeleccionada = lp);
+        }
+    }
+
+    public boolean isAvanzada() {
+        return avanzada;
+    }
+
+    public void setAvanzada(boolean avanzada) {
+        this.avanzada = avanzada;
+    }
+
+    public String getResultadoAvanzada() {
+        return resultadoAvanzada;
+    }
+
+    public String getComandosAvanzada() {
+        return comandosAvanzada;
+    }
+
+    public void setComandosAvanzada(String comandosAvanzada) {
+        this.comandosAvanzada = comandosAvanzada;
+    }
+    
+    
     public Categoria getCategoriaSeleccionada() {
         return categoriaSeleccionada;
     }
@@ -84,22 +129,58 @@ public class BatchOperations implements Serializable {
         if (listaPalabras == null) {
             listaPalabras = edicion.fetchListasPalabras();
             listaSeleccionada = listaPalabras.get(0);
+            listaAvanzadaSeleccionada = listaPalabras.get(0);
         }
         return listaPalabras;
     }
 
-    private Stream<Palabra> lineToWord(String line) {
+    public void procesarCambioAvanzada() {
+        System.out.println(avanzada);
+        if (listaAvanzadaSeleccionada != null && comandosAvanzada!= null) {
+            readWords(comandosAvanzada, listaAvanzadaSeleccionada)
+                    .forEach(palabra->{
+                    try {
+                        palabra.setAvanzada(avanzada);
+                        edicion.editarPalabra(palabra);
+                    } catch (ECPlusBusinessException e) {
+                    }
+                });
+            comandosAvanzada = "";
+            resultadoAvanzada = "Palabras procesadas";
+        } else {
+            Administration.addMessage("Select a word list and a category first");
+        }
+    }
+    
+    public void procesarCambioCategoria() {
+        if (listaSeleccionada != null && comandos!= null && categoriaSeleccionada != null) {
+            readWords(comandos, listaSeleccionada)
+                    .forEach(palabra->{
+                    try {
+                        palabra.setCategoria(categoriaSeleccionada);
+                        edicion.editarPalabra(palabra);
+                    } catch (ECPlusBusinessException e) {
+                    }
+                });
+            comandos = "";
+            resultado = "Palabras procesadas";
+        } else {
+            Administration.addMessage("Select a word list and a category first");
+        }
+    }
+    
+    public static Stream<Palabra> lineToWord(ListaPalabras lista, String line) {
         try {
             String[] nombreID = line.split(":");
             String nombre = nombreID[0];
             if (nombreID.length > 1) {
                 long id = Long.parseLong(nombreID[1]);
                 
-                return listaSeleccionada.getPalabras().stream()
+                return lista.getPalabras().stream()
                         .filter(p->p.getId()==id && 
                                 (nombre.isEmpty() || nombre.equals(p.getNombre())));
             } else {
-                return listaSeleccionada.getPalabras().stream()
+                return lista.getPalabras().stream()
                         .filter(p->nombre.equals(p.getNombre()));
             }
         } catch (NumberFormatException e) {
@@ -107,22 +188,9 @@ public class BatchOperations implements Serializable {
         }
     }
 
-    public void procesarCambioCategoria() {
-        if (listaSeleccionada != null && categoriaSeleccionada != null) {
-            Stream.of(comandos.split("\\r?\\n"))
-                    .flatMap(this::lineToWord)
-                    .forEach(palabra->{
-                        try {
-                            palabra.setCategoria(categoriaSeleccionada);
-                            edicion.editarPalabra(palabra);
-                        } catch (ECPlusBusinessException e) {
-                        }
-                    });
-            comandos = "";
-            resultado = "Palabras procesadas";
-        } else {
-            Administration.addMessage("Select a word list and a category first");
-        }
+    public static Stream<Palabra> readWords(String string, ListaPalabras lista) {
+        return Stream.of(string.split("\\r?\\n"))
+                .flatMap(line->lineToWord(lista, line));
     }
 
     public String getResultado() {

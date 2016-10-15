@@ -10,16 +10,16 @@
         <div class="ui-grid-col-12">
             <h3>Instrucciones</h3>
             <ol>
-                <li>Seleccione la lista de palabras y la catgoría que quiere asignar</li>
-                <li>Introduzca en el área de texto la lista de palabras cuya categoría quiere modificar,
+                <li>Seleccione la lista de palabras y el valor del atributo "avanzada" que quiere asignar</li>
+                <li>Introduzca en el área de texto la lista de palabras que quiere modificar,
                     escribiendo una palabra por línea con el formato "&lt;palabra&gt;:&lt;id&gt;".
                     La palabra o el id pueden estar ausentes, pero no ambos</li>
-                <li>Pulse el botón para cambiar la categoría de todas las palabras indicadas a la categoría seleciconada.</li>
+                <li>Pulse el botón para cambiar la propiedad avanzada de todas las palabras indicadas.</li>
             </ol>
             <h3>Aclaraciones</h3>
             <ul>
                 <li>Si una línea no casa con ninguna palabra de la lista se obviará silenciosamente.</li>
-                <li>Si varias palabras coincide con una línea (porque no se ha indicado el ID), se modificará la categoría de todas las palabras.</li>
+                <li>Si varias palabras coincide con una línea (porque no se ha indicado el ID), se modificarán todas las palabras.</li>
             </ul>
             <h3>Ejemplo</h3>
             <pre>
@@ -32,28 +32,27 @@ Agua
     
     <div class="ui-grid-row">
         <div class="ui-grid-col-4"> 
-            <p:selectOneMenu value="#{batchOperations.listaSeleccionada}">
-                <p:ajax update=":adminform:selectorCategorias"/>
+            <p:selectOneMenu value="#{batchOperations.listaAvanzadaSeleccionada}">
+                <p:ajax/>
                 <f:selectItems value="#{batchOperations.listaPalabras}" var="lp" itemLabel="#{localeBean.getDisplayLanguageForLocale(lp.idioma)} (#{lp.id})" itemValue="#{lp.idioma}"/>
             </p:selectOneMenu>
         </div>
-        <div class="ui-grid-col-4">    
-            <p:selectOneMenu id="selectorCategorias" value="#{batchOperations.categoriaSeleccionada}" converter="categoriaConverter">
-                <f:selectItems value="#{batchOperations.categorias}" var="categoria" itemLabel="#{categoria.nombre} (#{categoria.id})"/>
-            </p:selectOneMenu>
+        <div class="ui-grid-col-4">
+            <h:outputText value="#{msg.advancedColumn}" />
+            <p:inputSwitch id="avanzadaSwitch" value="#{batchOperations.avanzada}" onLabel="#{msg.yes}" offLabel="#{msg.no}"/>
         </div>
         <div class="ui-grid-col-4">
-            <p:commandButton value="#{msg.process}" actionListener="#{batchOperations.procesarCambioCategoria()}" update="adminform:growl adminform:resultado adminform:comandos"/>
+            <p:commandButton value="#{msg.process}" actionListener="#{batchOperations.procesarCambioAvanzada()}" update="adminform:growl adminform:resultadoAvanzada adminform:comandosAvanzada"/>
         </div>
     </div>
     <div class="ui-grid-row">
         <div class="ui-grid-col-12">
-            <h:outputText id="resultado" value="#{batchOperations.resultado}"/>
+            <h:outputText id="resultadoAvanzada" value="#{batchOperations.resultadoAvanzada}"/>
         </div>
     </div>
     <div class="ui-grid-row">
         <div class="ui-grid-col-12">
-            <p:inputTextarea id="comandos" value="#{batchOperations.comandos}" rows="10" cols="30" autoResize="false" />
+            <p:inputTextarea id="comandosAvanzada" value="#{batchOperations.comandosAvanzada}" rows="10" cols="30" autoResize="false" />
         </div>
     </div>
 </ui:composition>
