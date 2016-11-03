@@ -59,6 +59,19 @@
                     </p:cellEditor>
                 </p:column>
                 <p:column headerText="#{msg['oppositeColumn']}" rendered="true">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{palabra.contraria.nombre} (#{palabra.contraria.id})" rendered="#{!(empty palabra.contraria)}"/></f:facet>
+                        <f:facet name="input">
+                            <p:selectOneMenu id="opposite" value="#{palabra.contraria}" converter="palabraConverter" panelStyle="width:180px"
+                                             effect="fade" var="t" style="width:160px" filter="true" filterMatchMode="contains">
+                                <f:selectItem itemLabel="(none)" itemValue="#{null}"/>
+                                <f:selectItems value="#{administration.palabras}" var="p" itemLabel="#{p.nombre} (#{p.id})" itemValue="#{p}" />
+                                <p:column>
+                                    <h:outputText value="#{t.nombre} (#{t.id})" rendered="#{!(empty t)}"/>
+                                </p:column>
+                            </p:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
                 </p:column>
                 <p:column headerText="#{msg.hashesColumn}" rendered="true" style="white-space: normal">
                     <h:outputText value="#{administration.getResolucionesPalabra(palabra)}"/>

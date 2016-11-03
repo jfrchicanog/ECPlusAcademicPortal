@@ -24,6 +24,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 /**
@@ -56,6 +57,17 @@ public class Palabra implements Serializable {
     @JoinColumn(name="categoria")
     private Categoria categoria;
     private Boolean avanzada;
+    @OneToOne
+    @JoinColumn(name="contraria")
+    private Palabra contraria;
+
+    public Palabra getContraria() {
+        return contraria;
+    }
+
+    public void setContraria(Palabra contraria) {
+        this.contraria = contraria;
+    }
 
     public Boolean getAvanzada() {
         return avanzada;

@@ -66,9 +66,11 @@
                                     <p:column headerText="#{msg['categoryColumn']}" rendered="true" sortBy="#{palabra.categoria.nombre}" filterBy="#{palabra.categoria.nombre}" filterMatchMode="contains" >
                                         <h:outputText value="#{palabra.categoria.nombre}"/>
                                     </p:column>
-                                    <p:column headerText="#{msg['advancedColumn']}" rendered="false">
-                                    </p:column>
                                     <p:column headerText="#{msg['oppositeColumn']}" rendered="true">
+                                        <p:commandLink update=":form:panel:audiovisual :form:panel:headingPalabra">
+                                            <h:outputText value="#{palabra.contraria.nombre}"/>
+                                            <f:setPropertyActionListener target="#{content.palabraElegida}" value="#{palabra.contraria}"/>
+                                        </p:commandLink>
                                     </p:column>
                                 </p:dataTable>
                             </div>
@@ -113,9 +115,11 @@
                                     <p:column headerText="#{msg['categoryColumn']}" rendered="true" sortBy="#{palabra.categoria.nombre}" filterBy="#{palabra.categoria.nombre}" filterMatchMode="contains" >
                                         <h:outputText value="#{palabra.categoria.nombre}"/>
                                     </p:column>
-                                    <p:column headerText="#{msg['advancedColumn']}" rendered="false">
-                                    </p:column>
                                     <p:column headerText="#{msg['oppositeColumn']}" rendered="true">
+                                        <p:commandLink update=":form:panel:audiovisualAvanzada :form:panel:headingPalabraAvanzada">
+                                            <h:outputText value="#{palabra.contraria.nombre}"/>
+                                            <f:setPropertyActionListener target="#{content.palabraElegida}" value="#{palabra.contraria}"/>
+                                        </p:commandLink>
                                     </p:column>
                                 </p:dataTable>
                             </div>
