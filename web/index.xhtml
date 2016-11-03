@@ -48,8 +48,12 @@
                 <p:tab id="palabras" title="#{msg['words']}">
                     <div class="ui-grid ui-grid-responsive">
                         <div class="ui-grid-row">
-                            <div class="ui-grid-col-4">    
-                                <p:dataTable var="palabra" value="#{content.words}" widgetVar="wordsTable"
+                            <div class="ui-grid-col-4">  
+                                <h:outputText value="#{msg.advancedColumn}" />
+                                <p:inputSwitch id="avanzadaSwitch" value="#{content.avanzada}" onLabel="#{msg.yes}" offLabel="#{msg.no}">
+                                    <p:ajax update="form:panel:tablaPalabras" />
+                                </p:inputSwitch>
+                                <p:dataTable id="tablaPalabras" var="palabra" value="#{content.words}" widgetVar="wordsTable"
                                              emptyMessage="#{msg['nowords']}"
                                              paginator="true" rows="20"
                                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">

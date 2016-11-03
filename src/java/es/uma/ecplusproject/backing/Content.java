@@ -53,10 +53,20 @@ public class Content implements Serializable {
     private List<Palabra> palabras;
     private Palabra palabraElegida;
     
+    private boolean avanzada;
+    
     private List<Sindrome> sindromes;
     private Sindrome sindromeElegido;
-    
-    
+
+    public boolean isAvanzada() {
+        return avanzada;
+    }
+
+    public void setAvanzada(boolean avanzada) {
+        System.out.println(avanzada);
+        this.avanzada = avanzada;
+    }
+
     public Palabra getPalabraElegida() {
         return palabraElegida;
     }
@@ -171,7 +181,10 @@ public class Content implements Serializable {
         if (palabras == null) {
             palabras = fetchWords();
         }
-        return palabras;
+        System.out.println("Palabras "+avanzada);
+        return palabras.stream()
+                .filter(p->p.getAvanzada()==avanzada)
+                .collect(Collectors.toList());
     }
     
     public List<Sindrome> getSyndromes() {
