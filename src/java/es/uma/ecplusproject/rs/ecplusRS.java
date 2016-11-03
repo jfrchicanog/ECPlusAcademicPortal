@@ -260,6 +260,16 @@ public class ecplusRS {
             }
             return Response.ok(file, MediaType.valueOf("image/svg+xml")).build();
     }
+    
+    @GET
+    @Path("audio/{hash}")
+    public Response getAudio(@PathParam("hash") String name) {
+            File file = new File(context.getInitParameter("ecplus.resources.FILES_DIR"), name.toLowerCase());
+            if (file.isDirectory() || !file.exists()) {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+            return Response.ok(file, MediaType.valueOf("audio/mpeg3")).build();
+    }
 
     
     private String probeContentType(File file) {
