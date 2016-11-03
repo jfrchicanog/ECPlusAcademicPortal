@@ -55,7 +55,7 @@ public class Content implements Serializable {
     
     private List<Sindrome> sindromes;
     private Sindrome sindromeElegido;
-    
+
     
     public Palabra getPalabraElegida() {
         return palabraElegida;
@@ -171,7 +171,18 @@ public class Content implements Serializable {
         if (palabras == null) {
             palabras = fetchWords();
         }
-        return palabras;
+        return palabras.stream()
+                .filter(p->!p.getAvanzada())
+                .collect(Collectors.toList());
+    }
+    
+    public List<Palabra> getAdvancedWords() {
+        if (palabras == null) {
+            palabras = fetchWords();
+        }
+        return palabras.stream()
+                .filter(p->p.getAvanzada())
+                .collect(Collectors.toList());
     }
     
     public List<Sindrome> getSyndromes() {
