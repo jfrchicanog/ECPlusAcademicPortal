@@ -30,6 +30,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
@@ -48,6 +50,7 @@ import org.primefaces.event.SelectEvent;
 public class Administration implements Serializable {
 
     private static final String MENSAJES_BUNDLE = "mensajes";
+    private static final int MAX_AUTOCOMPLETE_TERMS = 10;
 
     @Inject
     private LocaleBean localeBean;
@@ -294,9 +297,48 @@ public class Administration implements Serializable {
     public void edicionPalabra(RowEditEvent event) {
         Palabra palabra = (Palabra) event.getObject();
         try {
-            int index = listaSeleccionada.getCategorias().indexOf(palabra.getCategoria());
-            palabra.setCategoria(listaSeleccionada.getCategorias().get(index));
-            
+            if (palabra.getCategoria() != null) {
+                int index = listaSeleccionada.getCategorias().indexOf(palabra.getCategoria());
+                palabra.setCategoria(listaSeleccionada.getCategorias().get(index));
+            }
+
+            if (palabra.getContraria() != null) {
+                int index = listaSeleccionada.getPalabras().indexOf(palabra.getContraria());
+                Palabra contraria = listaSeleccionada.getPalabras().get(index);
+                palabra.setContraria(contraria);
+
+                if (!palabra.equals(contraria.getContraria())) {
+                    listaSeleccionada.getPalabras().stream()
+                            .filter(p -> !palabra.equals(p))
+                            .filter(p -> palabra.equals(p.getContraria()) || contraria.equals(p.getContraria()))
+                            .forEach(p -> {
+                                try {
+                                    p.setContraria(null);
+                                    Palabra nueva = edicion.editarPalabra(p);
+                                    p.setHashes(nueva.getHashes());
+                                } catch (ECPlusBusinessException e) {
+                                    Logger.getLogger(getClass().getName()).severe(e.getLocalizedMessage());
+                                }
+                            });
+                    contraria.setContraria(palabra);
+                    Palabra nueva = edicion.editarPalabra(contraria);
+                    contraria.setHashes(nueva.getHashes());
+                }
+
+            } else {
+                listaSeleccionada.getPalabras().stream()
+                        .filter(p -> palabra.equals(p.getContraria()))
+                        .forEach(p -> {
+                            try {
+                                p.setContraria(null);
+                                Palabra nueva = edicion.editarPalabra(p);
+                                p.setHashes(nueva.getHashes());
+                            } catch (ECPlusBusinessException e) {
+                                Logger.getLogger(getClass().getName()).severe(e.getLocalizedMessage());
+                            }
+                        });
+            }
+
             Palabra nueva = edicion.editarPalabra(palabra);
             palabra.setHashes(nueva.getHashes());
             listaSeleccionada.setHashes(nueva.getListaPalabras().getHashes());
@@ -385,12 +427,20 @@ public class Administration implements Serializable {
                 if (!listaSeleccionada.getCategorias().contains(categoria)) {
                     listaSeleccionada.addCategoria(categoria);
                 }
-                
+
                 nombreNuevaCategoria = "";
             }
         } catch (ECPlusBusinessException e) {
             Logger.getLogger(Administration.class.getName()).log(Level.SEVERE, e.getMessage());
         }
+    }
+
+    public List<Palabra> completePalabras(String texto) {
+        return Stream.concat(Stream.of((Palabra) null),
+                listaSeleccionada.getPalabras().stream()
+                .filter(p -> p.getNombre().contains(texto)))
+                .limit(MAX_AUTOCOMPLETE_TERMS)
+                .collect(Collectors.toList());
     }
 
 }

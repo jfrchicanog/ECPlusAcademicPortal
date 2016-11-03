@@ -66,9 +66,11 @@
                                     <p:column headerText="#{msg['categoryColumn']}" rendered="true" sortBy="#{palabra.categoria.nombre}" filterBy="#{palabra.categoria.nombre}" filterMatchMode="contains" >
                                         <h:outputText value="#{palabra.categoria.nombre}"/>
                                     </p:column>
-                                    <p:column headerText="#{msg['advancedColumn']}" rendered="false">
-                                    </p:column>
                                     <p:column headerText="#{msg['oppositeColumn']}" rendered="true">
+                                        <p:commandLink update=":form:panel:audiovisual :form:panel:headingPalabra">
+                                            <h:outputText value="#{palabra.contraria.nombre}"/>
+                                            <f:setPropertyActionListener target="#{content.palabraElegida}" value="#{palabra.contraria}"/>
+                                        </p:commandLink>
                                     </p:column>
                                 </p:dataTable>
                             </div>
@@ -113,9 +115,11 @@
                                     <p:column headerText="#{msg['categoryColumn']}" rendered="true" sortBy="#{palabra.categoria.nombre}" filterBy="#{palabra.categoria.nombre}" filterMatchMode="contains" >
                                         <h:outputText value="#{palabra.categoria.nombre}"/>
                                     </p:column>
-                                    <p:column headerText="#{msg['advancedColumn']}" rendered="false">
-                                    </p:column>
                                     <p:column headerText="#{msg['oppositeColumn']}" rendered="true">
+                                        <p:commandLink update=":form:panel:audiovisualAvanzada :form:panel:headingPalabraAvanzada">
+                                            <h:outputText value="#{palabra.contraria.nombre}"/>
+                                            <f:setPropertyActionListener target="#{content.palabraElegida}" value="#{palabra.contraria}"/>
+                                        </p:commandLink>
                                     </p:column>
                                 </p:dataTable>
                             </div>
@@ -182,22 +186,6 @@
         </h:form>  
 
     </h:body>
-
-
-
-    <h:outputScript>
-
-        function recalcula(event) {
-        var svgDoc = event.currentTarget.contentDocument;
-        var svg = svgDoc.getElementsByTagName("svg")[0];
-        svg.viewBox.baseVal.x = svg.getBBox().x;
-        svg.viewBox.baseVal.width = svg.getBBox().width;
-        svg.viewBox.baseVal.y = svg.getBBox().y;
-        svg.viewBox.baseVal.height = svg.getBBox().height;
-        }
-
-    </h:outputScript>
-
 
 </html>
 

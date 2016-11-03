@@ -143,6 +143,18 @@ public class Edicion implements EdicionLocal {
             StringBuilder buffer = new StringBuilder();
             buffer.append(palabra.getNombre()).append(";");
             buffer.append(palabra.getIconoReemplazable()).append(";");
+            buffer.append(palabra.getAvanzada()).append(";");
+            
+            if (palabra.getCategoria() != null) {
+                buffer.append(palabra.getCategoria().getId());
+            }
+            buffer.append(";");
+            
+            if (palabra.getContraria() != null) {
+                buffer.append(palabra.getContraria().getId());
+            }
+            buffer.append(";");
+                    
             if (palabra.getIcono() != null) {
                 buffer.append(palabra.getIcono().getFicheros().get(res)).append(";");
             }

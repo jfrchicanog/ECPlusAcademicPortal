@@ -22,7 +22,7 @@
                 </f:facet>
 
                 <p:ajax event="rowSelect" update=":adminform:tablaRecursos"/>
-                <p:ajax event="rowEdit" listener="#{administration.edicionPalabra}" update=":adminform:tablaListasPalabras @this"/>
+                <p:ajax event="rowEdit" listener="#{administration.edicionPalabra}" update=":adminform:tablaListasPalabras adminform:tablaPalabras @this"/>
 
                 <p:column headerText="#{msg['idColumn']}" filterBy="#{palabra.id}" filterMatchMode="exact" sortBy="#{palabra.id}" rendered="true">
                     <h:outputText value="#{palabra.id}"/>
@@ -59,6 +59,18 @@
                     </p:cellEditor>
                 </p:column>
                 <p:column headerText="#{msg['oppositeColumn']}" rendered="true">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{palabra.contraria.nombre} (#{palabra.contraria.id})" rendered="#{!(empty palabra.contraria)}"/></f:facet>
+                        <f:facet name="input">
+                            <p:autoComplete id="opposite" value="#{palabra.contraria}" completeMethod="#{administration.completePalabras}"
+                                            var="p" itemLabel="#{p.nombre}#{empty p?'':' ('.concat(p.id).concat(')')}" itemValue="#{p}" converter="palabraConverter" forceSelection="true">
+                                <p:column>
+                                    <h:outputText value="#{p.nombre} (#{p.id})" rendered="#{!(empty p)}"/>
+                                    <h:outputText value="(none)" rendered="#{empty p}"/>
+                                </p:column>
+                            </p:autoComplete>
+                        </f:facet>
+                    </p:cellEditor>
                 </p:column>
                 <p:column headerText="#{msg.hashesColumn}" rendered="true" style="white-space: normal">
                     <h:outputText value="#{administration.getResolucionesPalabra(palabra)}"/>
