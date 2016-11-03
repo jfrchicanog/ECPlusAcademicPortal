@@ -5,6 +5,7 @@
  */
 package es.uma.ecplusproject.backing;
 
+import es.uma.ecplusproject.entities.Audio;
 import es.uma.ecplusproject.entities.Foto;
 import es.uma.ecplusproject.entities.ListaPalabras;
 import es.uma.ecplusproject.entities.ListaSindromes;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.faces.application.FacesMessage;
@@ -216,19 +216,23 @@ public class Content implements Serializable {
     
 
     public String getImageURL(String hash) {
+        String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
         return "/ecplus/api/v1/foto/"+hash;
     }
     
     public String getVideoURL(String hash) {
         String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
-        System.out.println(contextPath);
         return contextPath+"/ecplus/api/v1/video/"+hash;
     }
     
     public String getPictogramaURL(String hash) {
         String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
-        System.out.println(contextPath);
         return contextPath+"/ecplus/api/v1/pictograma/"+hash;
+    }
+    
+    public String getAudioURL(String hash) {
+        String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+        return contextPath+"/ecplus/api/v1/audio/"+hash;
     }
     
     public String getSindromeURL() {
@@ -263,6 +267,10 @@ public class Content implements Serializable {
     
     public boolean esFoto(RecursoAudioVisual rav) {
         return rav instanceof Foto;
+    }
+    
+    public boolean esAudio(RecursoAudioVisual rav) {
+        return rav instanceof Audio;
     }
      
     private void addMessage(String summary) {

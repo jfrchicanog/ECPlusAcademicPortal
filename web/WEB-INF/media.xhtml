@@ -20,6 +20,11 @@
                     <source src="#{content.getVideoURL(recurso.getFichero(resolucion))}" type="video/mp4" />
                 </video>
             </h:panelGroup>
+            <h:panelGroup rendered="#{content.esAudio(recurso)}" layout="block">
+                <audio id="audio" width="90%" controls="controls">
+                    <source src="#{content.getAudioURL(recurso.getFichero(resolucion))}" type="audio/mpeg"/>
+                </audio>
+            </h:panelGroup>
 
             <h:outputScript>
 

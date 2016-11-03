@@ -10,6 +10,7 @@ import es.uma.ecplusproject.ejb.CategoryWithWordsException;
 import es.uma.ecplusproject.ejb.ECPlusBusinessException;
 import es.uma.ecplusproject.ejb.EdicionLocal;
 import es.uma.ecplusproject.ejb.ListWithWordsException;
+import es.uma.ecplusproject.entities.Audio;
 import es.uma.ecplusproject.entities.Categoria;
 import es.uma.ecplusproject.entities.Foto;
 import es.uma.ecplusproject.entities.ListaPalabras;
@@ -17,7 +18,6 @@ import es.uma.ecplusproject.entities.Palabra;
 import es.uma.ecplusproject.entities.Pictograma;
 import es.uma.ecplusproject.entities.RecursoAudioVisual;
 import es.uma.ecplusproject.entities.Resolucion;
-import es.uma.ecplusproject.entities.Sindrome;
 import es.uma.ecplusproject.entities.Video;
 import java.io.File;
 import java.io.IOException;
@@ -32,13 +32,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
@@ -270,6 +266,8 @@ public class Administration implements Serializable {
             return ResourceBundle.getBundle(MENSAJES_BUNDLE).getString("video");
         } else if (rav instanceof Foto) {
             return ResourceBundle.getBundle(MENSAJES_BUNDLE).getString("picture");
+        } else if (rav instanceof Audio) {
+            return ResourceBundle.getBundle(MENSAJES_BUNDLE).getString("audio");
         } else {
             return ResourceBundle.getBundle(MENSAJES_BUNDLE).getString("unknownType");
         }

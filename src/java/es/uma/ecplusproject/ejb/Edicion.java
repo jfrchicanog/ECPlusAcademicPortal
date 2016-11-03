@@ -5,6 +5,7 @@
  */
 package es.uma.ecplusproject.ejb;
 
+import es.uma.ecplusproject.entities.Audio;
 import es.uma.ecplusproject.entities.Categoria;
 import es.uma.ecplusproject.entities.Foto;
 import es.uma.ecplusproject.entities.ListaPalabras;
@@ -27,8 +28,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -230,6 +229,8 @@ public class Edicion implements EdicionLocal {
             case "jpg":
             case "jpeg":
                 return new Foto();
+            case "mp3":
+                return new Audio();
             default:
                 throw new UnallowedFormatException("Format " + extension + " not allowed for resources");
         }
