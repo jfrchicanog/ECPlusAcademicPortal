@@ -183,21 +183,5 @@
 
     </h:body>
 
-
-
-    <h:outputScript>
-
-        function recalcula(event) {
-        var svgDoc = event.currentTarget.contentDocument;
-        var svg = svgDoc.getElementsByTagName("svg")[0];
-        svg.viewBox.baseVal.x = svg.getBBox().x;
-        svg.viewBox.baseVal.width = svg.getBBox().width;
-        svg.viewBox.baseVal.y = svg.getBBox().y;
-        svg.viewBox.baseVal.height = svg.getBBox().height;
-        }
-
-    </h:outputScript>
-
-
 </html>
 
