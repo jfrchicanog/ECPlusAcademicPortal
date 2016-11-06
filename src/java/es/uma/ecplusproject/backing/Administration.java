@@ -353,7 +353,8 @@ public class Administration implements Serializable {
             Palabra insertada = edicion.aniadirPalabra(nuevaPalabra);
             listaSeleccionada.setHashes(insertada.getListaPalabras().getHashes());
 
-            palabras = null;
+            listaSeleccionada.addPalabra(insertada);
+            
             nuevaPalabra = new Palabra();
         } catch (ECPlusBusinessException e) {
             System.out.println(e.getMessage());

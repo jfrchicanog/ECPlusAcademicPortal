@@ -91,21 +91,23 @@
                 <p:fieldset legend="#{msg.newWord}" >
                     <p:outputLabel value="#{msg.wordColumn}" for="nombrePalabra"/>
                     <p:inputText id="nombrePalabra" value="#{administration.nuevaPalabra.nombre}"/>
-                    <!--
                     <p:outputLabel value="#{msg.categoryColumn}" for="categoriaPalabra" />
-                    <p:selectOneMenu id="categoriaPalabra">
-                        <f:selectItem itemValue="" itemLabel="#{msg.noneFem}"/>
-                        <f:selectItems value="#{administration.categorias}" var="categoria" itemLabel="#{categoria.nombre}" itemValue="#{categoria.id}"/>
+                    <p:selectOneMenu id = "categoriaPalabra" value="#{administration.nuevaPalabra.categoria}" converter="categoriaConverter">
+                        <f:selectItem value="#{null}"/>
+                        <f:selectItems value="#{administration.listaSeleccionada.categorias}" var="categoria" itemLabel="#{categoria.nombre}"/>
                     </p:selectOneMenu>
-                    <p:outputLabel value="#{msg.advancedColumn}" for="avanzadaPalabra"/>
-                    <p:selectBooleanCheckbox id="avanzadaPalabra"/>
                     <p:outputLabel for="contrarioPalabra" value="#{msg.oppositeColumn}"  />
-                    <p:selectOneMenu id="contrarioPalabra" filter="true" filterMatchMode="startsWith">
-                        <f:selectItem itemLabel="#{msg.noneMale}" itemValue=""/>
-                        <f:selectItems value="#{administration.palabras}" var="palabra" itemLabel="#{palabra.nombre}" itemValue="#{palabra.id}" />
-                    </p:selectOneMenu> -->
+                    <p:autoComplete id="contrarioPalabra" value="#{administration.nuevaPalabra.contraria}" completeMethod="#{administration.completePalabras}"
+                                    var="p" itemLabel="#{p.nombre}#{empty p?'':' ('.concat(p.id).concat(')')}" itemValue="#{p}" converter="palabraConverter" forceSelection="true">
+                        <p:column>
+                            <h:outputText value="#{p.nombre} (#{p.id})" rendered="#{!(empty p)}"/>
+                            <h:outputText value="(none)" rendered="#{empty p}"/>
+                        </p:column>
+                    </p:autoComplete>
                     <p:outputLabel value="#{msg.replaceableIcon}" for="iconoReemplazablePalabra"/>
                     <p:selectBooleanButton id="iconoReemplazablePalabra" value="#{administration.nuevaPalabra.iconoReemplazable}" onLabel="#{msg.yes}" offLabel="#{msg.no}" />
+                    <p:outputLabel value="#{msg.advancedColumn}" for="avanzadaPalabra"/>
+                    <p:selectBooleanButton id="avanzadaPalabra" value="#{administration.nuevaPalabra.avanzada}" onLabel="#{msg.yes}" offLabel="#{msg.no}" />
                     <p:commandButton icon="fa fa-plus" actionListener="#{administration.aniadirPalabra}" update=":adminform:tablaListasPalabras :adminform:tablaPalabras nombrePalabra iconoReemplazablePalabra"/>
                 </p:fieldset>
             </ui:fragment>
