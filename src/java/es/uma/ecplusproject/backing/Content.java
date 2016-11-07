@@ -92,7 +92,12 @@ public class Content implements Serializable {
     }
     
     public String getLocalizedStringForTipoDocumento(String tipoDocumento) {
-        return localeBean.getResourceBundle().getString(tipoDocumento);
+        try {
+            TipoDocumento.valueOf(tipoDocumento);
+            return localeBean.getResourceBundle().getString(tipoDocumento);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     public String getIdiomaSeleccionado() {
