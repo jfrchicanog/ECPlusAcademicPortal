@@ -38,6 +38,7 @@
                         <f:facet name="output"><h:outputText value="#{content.getLocalizedStringForTipoDocumento(documento.tipo)}"/></f:facet>
                         <f:facet name="input">
                             <p:selectOneMenu value="#{documento.tipo}">
+                                <f:selectItem value="#{null}"/>
                                 <f:selectItems value="#{content.tiposDocumento}" var="tipo" itemLabel="#{content.getLocalizedStringForTipoDocumento(tipo)}"/>
                             </p:selectOneMenu>
                         </f:facet>
