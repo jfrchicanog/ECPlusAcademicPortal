@@ -5,12 +5,16 @@
  */
 package es.uma.ecplusproject.rs;
 
+import es.uma.ecplusproject.entities.Audio;
+import es.uma.ecplusproject.entities.Foto;
 import es.uma.ecplusproject.entities.ListaPalabras;
 import es.uma.ecplusproject.entities.ListaSindromes;
 import es.uma.ecplusproject.entities.Palabra;
+import es.uma.ecplusproject.entities.Pictograma;
 import es.uma.ecplusproject.entities.RecursoAudioVisual;
 import es.uma.ecplusproject.entities.Resolucion;
 import es.uma.ecplusproject.entities.Sindrome;
+import es.uma.ecplusproject.entities.Video;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -117,21 +121,17 @@ public class ecplusRS {
                 if (!p.getHashes().isEmpty() && p.getHashes().containsKey(res)) {
                     pr.setHash(p.getHashes().get(res));
                 }
-                if (p.getIcono() != null
-                        && !p.getIcono().getFicheros().isEmpty() && !p.getIcono().getFicheros().containsKey(res)) {
-                    pr.setHash(p.getIcono().getFicheros().get(res));
-                }
-                if (p.getIconoReemplazado() != null
-                        && !p.getIconoReemplazado().getFicheros().isEmpty()
-                        && !p.getIconoReemplazado().getFicheros().containsKey(res)) {
-                    pr.setHash(p.getIconoReemplazado().getFicheros().get(res));
-                }
+                if (p.getIcono() != null) {
+                    pr.setIcono(p.getIcono().getId());
+                } 
 
-                Set<String> resources = new HashSet<>();
+                Set<es.uma.ecplusproject.rs.RecursoAudioVisual> resources = new HashSet<>();
                 for (RecursoAudioVisual ra : p.getAudiovisuales()) {
-                    if (ra.getFicheros().containsKey(res)) {
-                        resources.add(ra.getFicheros().get(res));
-                    }
+                    es.uma.ecplusproject.rs.RecursoAudioVisual restRav = new es.uma.ecplusproject.rs.RecursoAudioVisual();
+                    restRav.setId(ra.getId());
+                    restRav.setHash(ra.getFichero(res));
+                    restRav.setType(getRESTType(ra));
+                    resources.add(restRav);
                 }
                 pr.setAudiovisuales(resources);
                 lpr.add(pr);
@@ -303,6 +303,20 @@ public class ecplusRS {
         }
 
         return Resolucion.BAJA;
+    }
+
+    private String getRESTType(RecursoAudioVisual ra) {
+        if (ra instanceof Foto) {
+            return "Fotografia";
+        } else if (ra instanceof Video) {
+            return "Video";
+        } else if (ra instanceof Pictograma) {
+            return "Pictograma";
+        } else if (ra instanceof Audio) {
+            return "Audio";
+        } else {
+            throw new RuntimeException("Unknown DTYPE "+ra.getClass());
+        }
     }
 
 }
