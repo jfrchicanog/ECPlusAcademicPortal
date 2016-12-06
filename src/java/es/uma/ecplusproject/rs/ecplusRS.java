@@ -118,6 +118,7 @@ public class ecplusRS {
                 pr.setNombre(p.getNombre());
                 pr.setId(p.getId());
                 pr.setIconoReemplazable(p.getIconoReemplazable());
+                pr.setAvanzada(p.getAvanzada());
                 if (!p.getHashes().isEmpty() && p.getHashes().containsKey(res)) {
                     pr.setHash(p.getHashes().get(res));
                 }
@@ -198,6 +199,7 @@ public class ecplusRS {
                 sin.setHash(s.getHash());
                 sin.setContenido(s.getContenido());
                 sin.setNombre(s.getNombre());
+                sin.setTipo(s.getTipo());
                 ls.add(sin);
             }
 
