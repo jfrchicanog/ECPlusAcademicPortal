@@ -5,6 +5,7 @@
  */
 package es.uma.ecplusproject.rs;
 
+import es.uma.ecplusproject.entities.TipoDocumento;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -19,7 +20,16 @@ public class SindromeClass implements Serializable {
     private String nombre;
     private byte [] contenido;
     private String hash;
+    private TipoDocumento tipo;
 
+    public TipoDocumento getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoDocumento tipo) {
+        this.tipo = tipo;
+    }
+    
     public Long getId() {
         return id;
     }
