@@ -159,7 +159,11 @@ public class Content implements Serializable {
             idiomas.add(new Locale(codigo));
         }
         
-        idiomaSeleccionado = idiomas.get(0);
+        if (codigosIdiomas.contains(localeBean.getLocale())) {
+            idiomaSeleccionado = new Locale(localeBean.getLocale());
+        } else {
+            idiomaSeleccionado = idiomas.get(0);
+        }
     }
     
     
