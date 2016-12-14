@@ -6,8 +6,10 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Enhanging Communication (EC+): #{msg['academicPortalAdmin']}</title>
+        <meta http-equiv="refresh" content="0;url=#{request.contextPath}/faces/admin/editWords.xhtml"/>
     </h:head>
     <h:body>
+       
         <h:form>
             <p:commandLink action="editWords.xhtml" ajax="false">Click here</p:commandLink>
         </h:form>
