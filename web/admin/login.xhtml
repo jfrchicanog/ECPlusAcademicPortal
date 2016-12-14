@@ -4,15 +4,71 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <h:head>
         <title>EC+ Academic Portal: login page</title>
+        <h:outputStylesheet name="bootstrap/css/bootstrap.min.css" />
+        <style>
+            .wrapper {    
+                margin-top: 80px;
+                margin-bottom: 20px;
+            }
+
+            .form-signin {
+                max-width: 420px;
+                padding: 30px 38px 66px;
+                margin: 0 auto;
+                background-color: #eee;
+                border: 3px solid rgba(0,0,0,1);  
+            }
+
+            .form-signin-heading {
+                text-align:center;
+                margin-bottom: 30px;
+            }
+
+            .form-control {
+                position: relative;
+                font-size: 16px;
+                height: auto;
+                padding: 10px;
+            }
+
+            input[type="text"] {
+                margin-bottom: 0px;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+
+            input[type="password"] {
+                margin-bottom: 20px;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+        </style>
     </h:head>
-    <h:body>
-             <h:form id="loginForm" onsubmit="document.loginForm.action = 'j_security_check';">  
-                <h:outputLabel value="Usuario"></h:outputLabel>  
-                <input name="j_username" type="text" />  
-                <h:outputLabel value="Contraseña"></h:outputLabel>  
-                <input name="j_password" size="15" type="password" />  
-                <h:commandButton value="Enviar"></h:commandButton>  
-            </h:form> 
+    <h:body>        
+
+        <div class="container">
+            <div class="wrapper">
+        
+                <h:form id="loginForm" onsubmit="document.loginForm.action = 'j_security_check';" styleClass="form-signin">  
+
+            <fieldset>
+                <legend>EC+ Portal Académico: zona de administración</legend>
+
+                
+                <input  name="j_username" placeholder="usuario" type="text" class="form-control" id="username" />
+                    
+                
+                        <input  name="j_password" type="password" placeholder="contraseña" class="form-control" id="password"/>
+                
+                
+                        <h:commandButton value="Enviar" styleClass="btn btn-lg btn-primary btn-block"></h:commandButton>
+                
+            </fieldset>
+        </h:form> 
+                
+            </div>
+        </div>
+              
     </h:body>
 </html>
 
