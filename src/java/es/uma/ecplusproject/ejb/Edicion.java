@@ -179,10 +179,11 @@ public class Edicion implements EdicionLocal {
     public Palabra aniadirPalabra(Palabra palabra) throws ECPlusBusinessException {
         try {
             calculaHashes(palabra);
-            em.persist(palabra);
             ListaPalabras lp = palabra.getListaPalabras();
             recalculaHashes(lp);
             em.merge(lp);
+            em.persist(palabra);
+
             return palabra;
         } catch (NoSuchAlgorithmException e) {
             throw new ECPlusBusinessException(e.getMessage());

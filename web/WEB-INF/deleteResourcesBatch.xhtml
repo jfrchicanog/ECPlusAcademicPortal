@@ -40,6 +40,10 @@ Agua
             </p:selectOneMenu>
         </div>
         <div class="ui-grid-col-4">
+            <h:outputText value="Remove all" />
+            <p:inputSwitch id="removeAllSwitch" value="#{deleteResources.removeAll}" onLabel="#{msg.yes}" offLabel="#{msg.no}"/>
+        </div>
+        <div class="ui-grid-col-4">
             <p:commandButton value="#{msg.process}" actionListener="#{deleteResources.procesar()}" update="adminform:growl adminform:resultadoDeleteResources adminform:comandosDeleteResources"/>
         </div>
     </div>

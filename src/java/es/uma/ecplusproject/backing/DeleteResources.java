@@ -9,6 +9,7 @@ import es.uma.ecplusproject.backing.util.WordsBatchSyntax;
 import es.uma.ecplusproject.ejb.ECPlusBusinessException;
 import es.uma.ecplusproject.ejb.EdicionLocal;
 import es.uma.ecplusproject.entities.ListaPalabras;
+import es.uma.ecplusproject.entities.Palabra;
 import es.uma.ecplusproject.entities.RecursoAudioVisual;
 import es.uma.ecplusproject.entities.Video;
 import java.io.Serializable;
@@ -36,6 +37,7 @@ public class DeleteResources implements Serializable {
     
     private String resultado;
     private String comandos;
+    private Boolean removeAll=false;
 
     
     public String getListaSeleccionada() {
@@ -65,34 +67,45 @@ public class DeleteResources implements Serializable {
     }
 
     public void procesar() {
-        if (listaSeleccionada == null || comandos == null) {
+        if (listaSeleccionada == null || !removeAll && comandos == null) {
             resultado = "Seleccione la lista y escriba las palabras";
             return;
         }
         
-        Stream.of(comandos.split("\\r?\\n")).forEach(line->{
-            processEntry(line);
-        });
+        if (removeAll) {
+            removeAllWordsFromList();
+        } else {
+            Stream.of(comandos.split("\\r?\\n")).forEach(line->{
+                processEntry(line);
+            });
+        }
         resultado = "Ejecutado con éxito";
         
+    }
+    
+    private void removeAllWordsFromList() {
+        listaSeleccionada.getPalabras().stream()
+                .forEach(this::removeResourcesFromWord);
+    }
+
+    private void removeResourcesFromWord(Palabra p) {
+        Iterator<RecursoAudioVisual> it = p.getAudiovisuales().iterator();
+        while (it.hasNext()) {
+            RecursoAudioVisual rav = it.next();
+            if (!(rav instanceof Video)) {
+                it.remove();
+            }
+        }
+        try {
+            edicion.editarPalabra(p);
+        } catch (ECPlusBusinessException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void processEntry(String origin) {
         WordsBatchSyntax.lineToWord(listaSeleccionada, origin)
-                .forEach(p->{
-                    Iterator<RecursoAudioVisual> it = p.getAudiovisuales().iterator();
-                    while (it.hasNext()) {
-                        RecursoAudioVisual rav = it.next();
-                        if (!(rav instanceof Video)) {
-                            it.remove();
-                        }
-                    }
-                    try {
-                        edicion.editarPalabra(p);
-                    } catch (ECPlusBusinessException e) {
-                        System.out.println(e.getMessage());
-                    }
-                });
+                .forEach(this::removeResourcesFromWord);
     }
     
     public String getResultado() {
@@ -106,5 +119,14 @@ public class DeleteResources implements Serializable {
     public void setComandos(String comandos) {
         this.comandos = comandos;
     }
+
+    public Boolean getRemoveAll() {
+        return removeAll;
+    }
+
+    public void setRemoveAll(Boolean removeAll) {
+        this.removeAll = removeAll;
+    }
+    
 
 }
