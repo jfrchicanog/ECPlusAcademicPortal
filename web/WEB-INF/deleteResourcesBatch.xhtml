@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+    
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-12">
+            <h2>Eliminar recursos</h2>
+            <h3>Instrucciones</h3>
+            <ol>
+                <li>Seleccione la lista de palabras</li>
+                <li>Introduzca en el área de texto la lista de palabras para aliminar sus recursos.</li>
+                <li>Para cada palabra debe usar el formato "&lt;palabra&gt;:&lt;id&gt;".
+                    La palabra o el id pueden estar ausentes, pero no ambos.</li>
+                <li>Pulse el botón para eliminar los pictogramas y las fotos.</li>
+            </ol>
+            <h3>Aclaraciones</h3>
+            <ul>
+                <li>Si una palabra no casa con ninguna palabra de la lista no hace nada.</li>
+                <li>Si varias palabras coinciden on la de la lista, se elimina los recursos en todos.</li>
+            </ul>
+            <h3>Ejemplo</h3>
+            <pre>
+Abuela:15
+:17
+Agua
+            </pre>
+        </div>
+    </div>
+    
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-4"> 
+            <p:outputLabel value="Lista:  " for="listaSeleccionadaDelete"/>
+            <p:selectOneMenu id ="listaSeleccionadaDelete" value="#{deleteResources.listaSeleccionada}">
+                <p:ajax/>
+                <f:selectItems value="#{deleteResources.listaPalabras}" var="lp" itemLabel="#{localeBean.getDisplayLanguageForLocale(lp.idioma)} (#{lp.id})" itemValue="#{lp.idioma}"/>
+            </p:selectOneMenu>
+        </div>
+        <div class="ui-grid-col-4">
+            <h:outputText value="Remove all" />
+            <p:inputSwitch id="removeAllSwitch" value="#{deleteResources.removeAll}" onLabel="#{msg.yes}" offLabel="#{msg.no}"/>
+        </div>
+        <div class="ui-grid-col-4">
+            <p:commandButton value="#{msg.process}" actionListener="#{deleteResources.procesar()}" update="adminform:growl adminform:resultadoDeleteResources adminform:comandosDeleteResources"/>
+        </div>
+    </div>
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-12">
+            <h:outputText id="resultadoDeleteResources" value="#{deleteResources.resultado}"/>
+        </div>
+    </div>
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-12">
+            <p:inputTextarea id="comandosDeleteResources" value="#{deleteResources.comandos}" rows="10" cols="30" autoResize="false" />
+        </div>
+    </div>
+</ui:composition>
+

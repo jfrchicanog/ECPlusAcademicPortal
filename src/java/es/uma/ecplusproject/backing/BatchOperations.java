@@ -5,6 +5,7 @@
  */
 package es.uma.ecplusproject.backing;
 
+import es.uma.ecplusproject.backing.util.WordsBatchSyntax;
 import es.uma.ecplusproject.ejb.ECPlusBusinessException;
 import es.uma.ecplusproject.ejb.EdicionLocal;
 import es.uma.ecplusproject.entities.Categoria;
@@ -137,7 +138,7 @@ public class BatchOperations implements Serializable {
     public void procesarCambioAvanzada() {
         System.out.println(avanzada);
         if (listaAvanzadaSeleccionada != null && comandosAvanzada!= null) {
-            readWords(comandosAvanzada, listaAvanzadaSeleccionada)
+            WordsBatchSyntax.readWords(comandosAvanzada, listaAvanzadaSeleccionada)
                     .forEach(palabra->{
                     try {
                         palabra.setAvanzada(avanzada);
@@ -154,7 +155,7 @@ public class BatchOperations implements Serializable {
     
     public void procesarCambioCategoria() {
         if (listaSeleccionada != null && comandos!= null && categoriaSeleccionada != null) {
-            readWords(comandos, listaSeleccionada)
+            WordsBatchSyntax.readWords(comandos, listaSeleccionada)
                     .forEach(palabra->{
                     try {
                         palabra.setCategoria(categoriaSeleccionada);
@@ -169,29 +170,6 @@ public class BatchOperations implements Serializable {
         }
     }
     
-    public static Stream<Palabra> lineToWord(ListaPalabras lista, String line) {
-        try {
-            String[] nombreID = line.split(":");
-            String nombre = nombreID[0];
-            if (nombreID.length > 1) {
-                long id = Long.parseLong(nombreID[1]);
-                
-                return lista.getPalabras().stream()
-                        .filter(p->p.getId()==id && 
-                                (nombre.isEmpty() || nombre.equals(p.getNombre())));
-            } else {
-                return lista.getPalabras().stream()
-                        .filter(p->nombre.equals(p.getNombre()));
-            }
-        } catch (NumberFormatException e) {
-            return Stream.empty();
-        }
-    }
-
-    public static Stream<Palabra> readWords(String string, ListaPalabras lista) {
-        return Stream.of(string.split("\\r?\\n"))
-                .flatMap(line->lineToWord(lista, line));
-    }
 
     public String getResultado() {
         return resultado;

@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+    
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-12">
+            <h2>Copiar recursos</h2>
+            <h3>Instrucciones</h3>
+            <ol>
+                <li>Seleccione la lista de palabras origen y la lista de destino</li>
+                <li>Introduzca en el área de texto la lista con la correspondencia entre idiomas
+                    escribiendo primero la palabra del idioma destino y después la de origen separados por tabulador.</li>
+                <li>Para cada palabra debe usar el formato "&lt;palabra&gt;:&lt;id&gt;".
+                    La palabra o el id pueden estar ausentes, pero no ambos.</li>
+                <li>Pulse el botón para pasar los pictogramas, las fotos y los vídeos (excepto el primero)
+                    de un idioma a otro.</li>
+            </ol>
+            <h3>Aclaraciones</h3>
+            <ul>
+                <li>Si una palabra origen no casa con ninguna palabra de su lista o una de destino no lo hace con 
+                    ninguna de la suya se obviará la operación para esa palabra.</li>
+                <li>Si varias palabras origen coinciden con una línea (porque no se ha indicado el ID), 
+                    se pasarán los recursos de todas las palabras origen.</li>
+                <li>Si una palabra destino coincide con varias de su lista, se pasarán los recursos a todas ellas.</li>
+                <li>Se trasladan los pictogramas, las fotos y los vídeos (menos el primero)</li>
+            </ul>
+            <h3>Ejemplo de español a inglés</h3>
+            <pre>
+Grandmather    Abuela:15
+Airplane:23    :17
+Water   Agua
+            </pre>
+        </div>
+    </div>
+    
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-4"> 
+            <p:outputLabel value="Origen: " for="listaOrigen"/>
+            <p:selectOneMenu id ="listaOrigen" value="#{copyResources.listaOrigen}">
+                <p:ajax/>
+                <f:selectItems value="#{copyResources.listaPalabras}" var="lp" itemLabel="#{localeBean.getDisplayLanguageForLocale(lp.idioma)} (#{lp.id})" itemValue="#{lp.idioma}"/>
+            </p:selectOneMenu>
+        </div>
+        <div class="ui-grid-col-4">
+            <p:outputLabel value="Destino: " for="listaDestino"/>
+            <p:selectOneMenu id ="listaDestino" value="#{copyResources.listaDestino}">
+                <p:ajax/>
+                <f:selectItems value="#{copyResources.listaPalabras}" var="lp" itemLabel="#{localeBean.getDisplayLanguageForLocale(lp.idioma)} (#{lp.id})" itemValue="#{lp.idioma}"/>
+            </p:selectOneMenu>
+        </div>
+        <div class="ui-grid-col-4">
+            <p:commandButton value="#{msg.process}" actionListener="#{copyResources.procesar()}" update="adminform:growl adminform:resultadoCopyResources adminform:comandosCopyResources"/>
+        </div>
+    </div>
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-12">
+            <h:outputText id="resultadoCopyResources" value="#{copyResources.resultado}"/>
+        </div>
+    </div>
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-12">
+            <p:inputTextarea id="comandosCopyResources" value="#{copyResources.comandos}" rows="10" cols="30" autoResize="false" />
+        </div>
+    </div>
+</ui:composition>
+
