@@ -28,7 +28,16 @@ public class PalabraRes implements Serializable {
     private Long icono;
     private String iconoReemplazado;
     private Boolean avanzada;
+    private Long categoria;
 
+    public Long getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Long categoria) {
+        this.categoria = categoria;
+    }
+    
     public Boolean getAvanzada() {
         return avanzada;
     }

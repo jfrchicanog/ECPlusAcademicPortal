@@ -119,6 +119,7 @@ public class ecplusRS {
                 pr.setId(p.getId());
                 pr.setIconoReemplazable(p.getIconoReemplazable());
                 pr.setAvanzada(p.getAvanzada());
+                pr.setCategoria(p.getCategoria().getId());
                 if (!p.getHashes().isEmpty() && p.getHashes().containsKey(res)) {
                     pr.setHash(p.getHashes().get(res));
                 }
@@ -148,6 +149,38 @@ public class ecplusRS {
         }
     }
 
+    @GET
+    @Path("categories/{language}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getCategoryList(@PathParam("language") String language) {
+        TypedQuery<ListaPalabras> query = em.createQuery("select p from ListaPalabras p where p.idioma=:idioma", ListaPalabras.class);
+        query.setParameter("idioma", language);
+        List<ListaPalabras> words = query.getResultList();
+        try {
+
+            if (words.isEmpty()) {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
+            List<Palabra> listp = words.get(0).getPalabras();
+            List<CategoryClass> lc = new ArrayList<>();
+            for (Palabra p : listp) {
+                CategoryClass pc = new CategoryClass();
+                pc.setNombre(p.getCategoria().getNombre());
+                pc.setId(p.getCategoria().getId());
+                if(!lc.contains(pc)) lc.add(pc);
+            }
+
+            GenericEntity<List<CategoryClass>> lc2
+                    = new GenericEntity<List<CategoryClass>>(lc) {
+            };
+            return Response.ok(lc2).build();
+
+        } catch (NoResultException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    }    
+    
     @GET
     @Path("sindromes/{language}/hash")
     @Produces(MediaType.APPLICATION_JSON)
