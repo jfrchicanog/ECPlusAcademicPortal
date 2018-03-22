@@ -6,6 +6,7 @@
 package es.uma.ecplusproject.rs;
 
 import es.uma.ecplusproject.entities.Audio;
+import es.uma.ecplusproject.entities.Categoria;
 import es.uma.ecplusproject.entities.Foto;
 import es.uma.ecplusproject.entities.ListaPalabras;
 import es.uma.ecplusproject.entities.ListaSindromes;
@@ -23,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,8 +42,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.servlet.ServletContext;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
@@ -119,7 +117,13 @@ public class ecplusRS {
                 pr.setId(p.getId());
                 pr.setIconoReemplazable(p.getIconoReemplazable());
                 pr.setAvanzada(p.getAvanzada());
-                pr.setCategoria(p.getCategoria().getId());
+                
+                if (p.getCategoria() != null) {
+                    pr.setCategoria(p.getCategoria().getId());
+                } else {
+                    pr.setCategoria(null);
+                }
+                
                 if (!p.getHashes().isEmpty() && p.getHashes().containsKey(res)) {
                     pr.setHash(p.getHashes().get(res));
                 }
@@ -161,14 +165,13 @@ public class ecplusRS {
             if (words.isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
-
-            List<Palabra> listp = words.get(0).getPalabras();
+            
             List<CategoryClass> lc = new ArrayList<>();
-            for (Palabra p : listp) {
+            for (Categoria c: words.get(0).getCategorias()) {
                 CategoryClass pc = new CategoryClass();
-                pc.setNombre(p.getCategoria().getNombre());
-                pc.setId(p.getCategoria().getId());
-                if(!lc.contains(pc)) lc.add(pc);
+                pc.setNombre(c.getNombre());
+                pc.setId(c.getId());
+                lc.add(pc);
             }
 
             GenericEntity<List<CategoryClass>> lc2
