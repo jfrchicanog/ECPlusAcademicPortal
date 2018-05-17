@@ -28,6 +28,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -86,13 +88,32 @@ public class Edicion implements EdicionLocal {
             for (String hash : listaHashes) {
                 buffer.append(hash);
             }
-
+            buffer.append("|");
+            
+            listaHashes.clear();
+            if (lp.getCategorias() != null) {
+                for (Categoria categoria: lp.getCategorias()) {
+                    listaHashes.add(hashCategoria(categoria)+";");
+                }
+            }
+            Collections.sort(listaHashes);
+            for (String hash : listaHashes) {
+                buffer.append(hash);
+            }
+            
             String hash = calculaHash(buffer.toString().getBytes(Charset.forName("UTF-8")));
 
             lp.updateHash(res, hash);
         }
     }
-
+    
+    private String hashCategoria(Categoria categoria) throws NoSuchAlgorithmException {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(categoria.getId()).append(";");
+        buffer.append(categoria.getNombre()).append(";");
+        return calculaHash(buffer.toString().getBytes(Charset.forName("UTF-8")));
+    }
+    
     private String calculaHash(byte[] contenido) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-1");
         String hash = new HexBinaryAdapter().marshal(digest.digest(contenido));
@@ -141,6 +162,7 @@ public class Edicion implements EdicionLocal {
 
         for (Resolucion res : Resolucion.values()) {
             StringBuilder buffer = new StringBuilder();
+            buffer.append(palabra.getId()).append(";");
             buffer.append(palabra.getNombre()).append(";");
             buffer.append(palabra.getIconoReemplazable()).append(";");
             buffer.append(palabra.getAvanzada()).append(";");
@@ -390,34 +412,54 @@ public class Edicion implements EdicionLocal {
     }
 
     @Override
-    public void aniadirCategoria(Categoria categoria) throws ECPlusBusinessException {
-        em.persist(categoria);
-        ListaPalabras lp = categoria.getListaPalabras();
-        if (!lp.getCategorias().contains(categoria)) {
-            lp.addCategoria(categoria);
-        }
-
-    }
-
-    @Override
-    public void eliminarCategoria(Categoria categoria) throws ECPlusBusinessException {
-
-        Categoria eliminar = em.merge(categoria);
-        TypedQuery<Long> query = em.createQuery("select count(*) from Palabra p where p.categoria=:categoria", Long.class);
-        query.setParameter("categoria", categoria);
-        if (query.getSingleResult() > 0) {
-            throw new CategoryWithWordsException("There exist words with this category: " + categoria.getNombre());
-        } else {
-            ListaPalabras lp = eliminar.getListaPalabras();
-            eliminar.setListaPalabras(null);
-            lp.removeCategoria(eliminar);
-            em.remove(eliminar);
+    public Categoria aniadirCategoria(Categoria categoria) throws ECPlusBusinessException {
+        try {
+            em.persist(categoria);
+            ListaPalabras lp = categoria.getListaPalabras();
+            if (!lp.getCategorias().contains(categoria)) {
+                lp.addCategoria(categoria);
+            }
+            recalculaHashes(lp);
+            em.merge(lp);
+            return categoria;
+        } catch (NoSuchAlgorithmException e) {
+            throw new ECPlusBusinessException(e.getMessage());
         }
     }
 
     @Override
-    public void editarCategoria(Categoria categoria) throws ECPlusBusinessException {
-        em.merge(categoria);
+    public ListaPalabras eliminarCategoria(Categoria categoria) throws ECPlusBusinessException {
+        try {
+            Categoria eliminar = em.merge(categoria);
+            TypedQuery<Long> query = em.createQuery("select count(*) from Palabra p where p.categoria=:categoria", Long.class);
+            query.setParameter("categoria", categoria);
+            if (query.getSingleResult() > 0) {
+                throw new CategoryWithWordsException("There exist words with this category: " + categoria.getNombre());
+            } else {
+                ListaPalabras lp = eliminar.getListaPalabras();
+                eliminar.setListaPalabras(null);
+                lp.removeCategoria(eliminar);
+                em.remove(eliminar);
+                recalculaHashes(lp);
+                em.merge(lp);
+                return lp;
+            }
+        } catch (NoSuchAlgorithmException e) {
+            throw new ECPlusBusinessException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Categoria editarCategoria(Categoria categoria) throws ECPlusBusinessException {
+        try {
+            em.merge(categoria);
+            ListaPalabras lp = categoria.getListaPalabras();
+            recalculaHashes(lp);
+            em.merge(lp);
+            return categoria;
+        } catch (NoSuchAlgorithmException e) {
+            throw new ECPlusBusinessException(e.getMessage());
+        }
     }
 
     public List<ListaPalabras> fetchListasPalabras() {
@@ -428,6 +470,25 @@ public class Edicion implements EdicionLocal {
     public List<ListaSindromes> fetchListasindromes() {
         TypedQuery<ListaSindromes> query = em.createNamedQuery("todas-listas-sindromes", ListaSindromes.class);
         return query.getResultList();
+    }
+
+    @Override
+    public void recomputeHashes() throws ECPlusBusinessException {
+        try {
+            List<ListaPalabras> listaListas = fetchListasPalabras();
+            for (ListaPalabras lp : listaListas) {
+                recalculaHashes(lp);
+            }
+            
+            List<ListaSindromes> listaListaSindromes = fetchListasindromes();
+            for (ListaSindromes ls: listaListaSindromes) {
+                recalculaHash(ls);
+            }
+             
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+            throw new ECPlusBusinessException(e.getMessage());
+        }
+        
     }
 
 }

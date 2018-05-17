@@ -31,9 +31,9 @@ public interface EdicionLocal {
     public Palabra eliminarRecursoDePalabra(Palabra palabra, RecursoAudioVisual rav) throws ECPlusBusinessException;
     public ListaPalabras eliminarPalabra(Palabra palabra) throws ECPlusBusinessException;
     
-    public void aniadirCategoria(Categoria categoria) throws ECPlusBusinessException;
-    public void eliminarCategoria(Categoria categoria) throws ECPlusBusinessException;
-    public void editarCategoria(Categoria categoria) throws ECPlusBusinessException;
+    public Categoria aniadirCategoria(Categoria categoria) throws ECPlusBusinessException;
+    public ListaPalabras eliminarCategoria(Categoria categoria) throws ECPlusBusinessException;
+    public Categoria editarCategoria(Categoria categoria) throws ECPlusBusinessException;
     
     public void aniadirListaSindromes(ListaSindromes lista) throws ECPlusBusinessException;
     public void eliminarListaSindromes(ListaSindromes lista) throws ECPlusBusinessException;
@@ -44,5 +44,7 @@ public interface EdicionLocal {
 
     public List<ListaPalabras> fetchListasPalabras();
     public List<ListaSindromes> fetchListasindromes();
+    
+    public void recomputeHashes() throws ECPlusBusinessException;
     
 }
