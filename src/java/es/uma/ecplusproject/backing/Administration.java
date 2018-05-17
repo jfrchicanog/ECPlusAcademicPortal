@@ -389,9 +389,10 @@ public class Administration implements Serializable {
 
     public void eliminarCategoria(Categoria cat) {
         try {
-            edicion.eliminarCategoria(cat);
+            ListaPalabras lp = edicion.eliminarCategoria(cat);
             if (listaSeleccionada != null) {
                 listaSeleccionada.removeCategoria(cat);
+                listaSeleccionada.setHashes(lp.getHashes());
             }
         } catch (CategoryWithWordsException e) {
             addMessage(e.getMessage());
@@ -403,7 +404,8 @@ public class Administration implements Serializable {
     public void edicionCategoria(RowEditEvent event) {
         Categoria documento = (Categoria) event.getObject();
         try {
-            edicion.editarCategoria(documento);
+            Categoria cat = edicion.editarCategoria(documento);
+            listaSeleccionada.setHashes(cat.getListaPalabras().getHashes());
         } catch (ECPlusBusinessException e) {
             System.out.println(e.getMessage());
         }
