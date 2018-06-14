@@ -80,6 +80,7 @@ public class Edicion implements EdicionLocal {
             List<String> listaHashes = new ArrayList<>();
             if (lp.getPalabras() != null) {
                 for (Palabra palabra : lp.getPalabras()) {
+                    calculaHashes(palabra);
                     listaHashes.add(palabra.getHashes().get(res) + ";");
                 }
             }
